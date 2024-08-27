@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+*{
+   @apply duration-150
+}
+
+body{
+   @apply bg-white dark:bg-dark-900
+}
+
+.fit-container{
+   @apply max-w-7xl w-full mx-auto  xl:px-0 px-3
+}
