@@ -24,11 +24,11 @@ export function ThemeSwitch() {
   )
 
   if (resolvedTheme === 'dark') {
-    return <FiSun className="text-white cursor-pointer" onClick={() => setTheme('light')} />
+    return <FiSun className="text-white cursor-pointer mr-10 p-1.5 hover:bg-azul-900/50 duration-200 rounded-full" size={32} onClick={() => setTheme('light')}/>
   }
 
   if (resolvedTheme === 'light') {
-    return <FiMoon className="text-black cursor-pointer" onClick={() => setTheme('dark')} />
+    return <FiMoon className="text-black cursor-pointer mr-10 p-1.5 hover:bg-azul-900/30 duration-200 rounded-full" size={32} onClick={() => setTheme('dark')}/>
   }
 
 }

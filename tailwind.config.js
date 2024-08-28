@@ -10,6 +10,13 @@ export const darkMode = 'class';
 
 export const theme = {
   extend: {
+    height:{
+      "screen-header": "calc(100vh - 80px)",
+      "screen-header-subtitle": "calc(100vh - 168px)",
+      "screen-header-subtitle-sm": "calc(100vh - 140px)",
+      "screen-header-subtitle-md": "calc(100vh - 144px)",
+      "screen-header-subtitle-lg": "calc(100vh - 148px)", 
+    },
     colors: {
       azul: {
         900: '#5A9CDA',
@@ -33,7 +40,6 @@ export const theme = {
         900: '#121212',
         800: '#1d2022',
         700: '#1b2226',
-
         600: '#383b40',
         500: '#1b2226',
         100: '#272a2b',
