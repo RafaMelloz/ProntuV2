@@ -2,6 +2,8 @@
 
 import { GoUpload } from "react-icons/go";
 import { InputText } from "../inputText"
+import { InputFile } from "../inputFile"
+
 import { useState } from "react";
 
 export function ClinicRegistration() {
@@ -94,31 +96,15 @@ export function ClinicRegistration() {
                 <InputText InputId={"passwordConfirm"} password labelName={'Confirme sua senha:'} required={true} onChange={changeRegister} />
             </div>
 
-            <hr className="my-3  border-black/40 dark:border-zinc-50/40" />
+            <hr className="mt-3 border-black/40 dark:border-zinc-50/40" />
 
             <div className="flex justify-between gap-10">
                 <InputText InputId={"nameClinic"} labelName={'Nome da clinica:'} required={true} onChange={changeRegister} />
 
-                <label htmlFor="logoClinic" className="font-medium w-1/2">
-                    Logo da clínica
-                    <label
-                        htmlFor="logoClinic"
-                        className="file-prontuario">
-                        <GoUpload className="size-5 stroke-1 mr-3" />
-                        {inputFileData.length === 0 ? 'Subir Imagem' : inputFileData[0].name}
-                    </label>
-                    <input
-                        type="file"
-                        id="logoClinic"
-                        name="logoClinic"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleFileName}
-                    />
-                </label>
+                <InputFile label={'Logo da clínica'} name={'logoClinic'} func={handleFileName} inputFileData={inputFileData}/>
             </div>
 
-            <div className="flex flex-col gap-3 items-center  sm:gap-0 sm:flex-row sm:justify-end">
+            <div className="flex flex-col gap-3 items-center mt-3 sm:gap-0 sm:flex-row sm:justify-end">
                 <button
                     onClick={formValidation}
                     type="button"

@@ -18,37 +18,40 @@ body{
    @apply text-black/70 dark:text-white/90;
 }
 
-
 /*INPUTS-FORM*/
-    .custom-label{
-        @apply flex textSwitch;
-    }
-    .custom-input{
-        @apply border border-cinza-700 bg-azul-800 text-black dark:border-dark-600 dark:bg-dark-800 dark:text-white font-normal px-2 py-[10px] rounded-lg outline-none hover:border-azul-900 focus:border-azul-900 ;
-    }   
+.custom-label{
+    @apply flex textSwitch;
+}
+.custom-input{
+    @apply border border-cinza-700 bg-azul-800 text-black dark:border-dark-600 dark:bg-dark-800 dark:text-white font-normal px-2 py-[10px] rounded-lg outline-none hover:border-azul-900 focus:border-azul-900 ;
+}   
 
-    .radio-input {
-        @apply hidden;
-    }
-    .radio-label {
-        @apply flex justify-center items-center p-[5px] border textSwitch bg-white border-cinza-900 dark:bg-dark-800 dark:border-dark-100  rounded-lg cursor-pointer;
-    }
-    .radio-input:checked + .radio-label {
-        @apply border-azul-900 border-2 bg-azul-700 dark:bg-dark-500;
-    }
-    .radio-input:not(:checked) + .radio-label {
-        @apply border bg-white border-cinza-900 dark:bg-dark-800 dark:border-dark-100
-    }
-    
-    .input-escada:nth-of-type(1) label{
-        @apply h-9;
-    }
-    .input-escada:nth-of-type(2) label{
-        @apply h-16;
-    }
-    .input-escada:nth-of-type(3) label{
-        @apply h-24
-    }
-    .input-escada:nth-of-type(4) label{
-        @apply h-32
-    }
+.radio-input {
+    @apply hidden;
+}
+.radio-label {
+    @apply flex justify-center items-center p-[5px] border textSwitch bg-white border-cinza-900 dark:bg-dark-800 dark:border-dark-100  rounded-lg cursor-pointer;
+}
+.radio-input:checked + .radio-label {
+    @apply border-azul-900 border-2 bg-azul-700 dark:bg-dark-500;
+}
+.radio-input:not(:checked) + .radio-label {
+    @apply border bg-white border-cinza-900 dark:bg-dark-800 dark:border-dark-100
+}
+
+
+.input-escada:nth-of-type(1) label{
+    @apply h-9;
+}
+.input-escada:nth-of-type(2) label{
+    @apply h-16;
+}
+.input-escada:nth-of-type(3) label{
+    @apply h-24
+}
+.input-escada:nth-of-type(4) label{
+    @apply h-32
+}
+.file-prontuario{
+    @apply text-gray-500 bg-azul-800 border-cinza-950/80 dark:bg-dark-800 dark:text-gray-400 dark:border-cinza-950 flex items-center justify-center  border-dashed border-2  rounded-lg p-2 mt-2 cursor-pointer;
+}
