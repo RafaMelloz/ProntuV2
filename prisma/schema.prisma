@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Clinic {
+  idClinic        Int        @id @default(autoincrement())
+  clinicSlug      String     @unique @default(cuid())
+  nameClinic      String
+  logoClinic      String?
+  address         String
+  responsibleName String
+  cpfCnpj         String     @unique
+  users           User[]
+  patients        Patient[]
+  calendars       Calendar[]
+  codeClinic      String?
+
+  @@map("clinics")
+}
+
+model User {
+  idUser     Int        @id @default(autoincrement())
+  name       String
+  email      String     @unique
+  phone      String?
+  password   String
+  role       String
+  idClinic   Int
+  clinic     Clinic     @relation(fields: [idClinic], references: [idClinic])
+  profileImg String?
+  Calendar   Calendar[]
+
+  @@map("users")
+}
+
+model Patient {
+  idPatient      Int             @id @default(autoincrement())
+  name           String
+  birth_date     String
+  phone          String
+  cpf            String
+  profession     String
+  email          String?
+  address        String
+  how_know_us    String
+  idClinic       Int
+  clinic         Clinic          @relation(fields: [idClinic], references: [idClinic])
+  medicalRecords MedicalRecord[]
+  symptoms       Symptom[]
+  Calendar       Calendar[]
+
+  @@map("patients")
+}
+
+model Symptom {
+  idSymptom           Int      @id @default(autoincrement())
+  uncomfortableAreas  String
+  description         String
+  cause               String
+  discomforts         String[]
+  frequency           String
+  discomfortIncreases String[]
+  discomfortDecreases String[]
+  geralState          String[]
+  headNeck            String[]
+  thoraxRespiratory   String[]
+  cardioVascular      String[]
+  gastroIntestinal    String[]
+  genitoUrinary       String[]
+
+  patientId Int
+  patient   Patient @relation(fields: [patientId], references: [idPatient])
+
+  @@map("symptoms")
+}
+
+model MedicalRecord {
+  idMedicalRecord      Int     @id @default(autoincrement())
+  patientId            Int     @unique
+  observations         String?
+  subjectiveEvaluation String?
+
+  services  Services[]
+  documents Documents[]
+  patient   Patient     @relation(fields: [patientId], references: [idPatient])
+
+  @@map("medical_records")
+}
+
+model Documents {
+  idDocuments     Int @id @default(autoincrement())
+  medicalRecordId Int
+
+  nameImagesEvaluation String[]
+  imagesEvaluation     String[]
+  examsName            String[]
+  exams                String[]
+  medicalRecords       MedicalRecord @relation(fields: [medicalRecordId], references: [idMedicalRecord])
+
+  @@map("documents")
+}
+
+model Services {
+  idService          Int           @id @default(autoincrement())
+  nameService        String
+  dateService        String
+  adjustmentAreas    String[]
+  descriptionService String
+  medicalRecordId    Int
+  medicalRecords     MedicalRecord @relation(fields: [medicalRecordId], references: [idMedicalRecord])
+
+  @@map("services")
+}
+
+model Calendar {
+  IdConsult      Int     @id @default(autoincrement())
+  patientName    String
+  dateForListing String
+  dateConsult    String
+  hourConsult    String
+  consultType    String
+  qntReturns     Int?
+  currentReturn  Int?
+  phone          String
+  notes          String?
+
+  idClinic       Int
+  patientId      Int?
+  professionalId Int
+
+  professional User     @relation(fields: [professionalId], references: [idUser])
+  patient      Patient? @relation(fields: [patientId], references: [idPatient])
+  clinic       Clinic   @relation(fields: [idClinic], references: [idClinic])
+
+  @@map("calendars")
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  question  String
+  isUseful  Boolean
+  createdAt DateTime @default(now())
+
+  @@map("feedback")
+}
