@@ -55,3 +55,7 @@ body{
 .file-prontuario{
     @apply text-gray-500 bg-azul-800 border-cinza-950/80 dark:bg-dark-800 dark:text-gray-400 dark:border-cinza-950 flex items-center justify-center  border-dashed border-2  rounded-lg p-2 mt-2 cursor-pointer;
 }
+
+.colorsAlerts{
+    @apply bg-slate-300 dark:bg-dark-600 text-slate-900 dark:text-white font-semibold;
+}

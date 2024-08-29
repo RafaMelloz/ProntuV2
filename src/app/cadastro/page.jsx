@@ -7,18 +7,20 @@ export default function CadastroPage(){
             <div className="w-full py-10 sm:bg-azul-900 sm:p-0  sm:w-1/2 flex items-center justify-center">
                 <Image
                     src={"/logo.svg"}
+                    priority={true}
                     alt="Logo"
                     width={300}
                     height={300}
-                    className="hidden sm:block"  
+                    className="hidden sm:block w-auto h-auto"  
                 />
 
                 <Image
                     src={"/minLogo.svg"}
+                    priority={true}
                     alt="Logo"
                     width={150}
                     height={150}
-                    className="block sm:hidden"
+                    className="block sm:hidden w-auto h-auto"
                 />
             </div>
 

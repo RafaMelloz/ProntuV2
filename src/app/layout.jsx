@@ -1,3 +1,4 @@
+import { Toaster } from "react-hot-toast";
 import { DarkModeProvider } from "../providers/darkMode";
 import "./globals.css";
 
@@ -12,6 +13,9 @@ export default function RootLayout({ children }) {
     <html lang="pt-br" suppressHydrationWarning>
       <body>
           <DarkModeProvider>
+            <Toaster toastOptions={{
+            className: 'colorsAlerts'
+            }}/>
             {children}
           </DarkModeProvider>
       </body>
