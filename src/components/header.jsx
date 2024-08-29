@@ -1,31 +1,25 @@
 import { ThemeSwitch } from "./themeSwitch";
 import { DefaultUser } from "./defaultUser";
 
-export function Header({ subtitle, user }) {
+export function Header({ subtitle, user, clinic}) {
 
     //TODO: Implementar a props clinicSettings e user
-
-    const clinicSettings = {
-        name: "Arkham",
-        img: ""
-    }
+    const { nameClinic, logoClinic } = clinic;
     
     return (
         <header>
             <nav className="bg-azul-800 border-cinza-900/20 dark:bg-dark-800 dark:border-dark-100 w-full h-20 flex justify-between  border-b-2 ">
                 <div className="flex items-center">
                     <div className="border-cinza-900/20 dark:border-dark-100 h-full w-24 flex justify-center items-center border-r-2 ">
-                        {/* {
-                            clinicSettings.logoClinic
-                                ? <img className="w-12 h-12 rounded-full" src={clinicSettings.logoClinic} alt="Logo da clinica" fetchPriority="high" />
+                        {
+                            logoClinic
+                                ? <img className="w-12 h-12 rounded-full" src={logoClinic} alt="Logo da clinica" fetchPriority="high" />
                                 : <DefaultUser clinic />
-                        } */}
-
-                        <DefaultUser clinic />
+                        }
                     </div>
 
                     <span className="text-xl text-azul-900 font-semibold pl-2 sm:text-2xl sm:pl-4">
-                        {clinicSettings.name}
+                        {nameClinic}
                     </span>
                 </div> 
 

@@ -39,7 +39,6 @@ body{
     @apply border bg-white border-cinza-900 dark:bg-dark-800 dark:border-dark-100
 }
 
-
 .input-escada:nth-of-type(1) label{
     @apply h-9;
 }
@@ -59,3 +58,23 @@ body{
 .colorsAlerts{
     @apply bg-slate-300 dark:bg-dark-600 text-slate-900 dark:text-white font-semibold;
 }
+
+
+#ajusteInput33 {
+        width: 100%!important;
+    }
+    @media (min-width:640px) {
+        #ajusteInput33 {
+            width: 73%!important;
+        }
+    }
+    @media (max-width:460px) {
+        .input-escada label{
+            font-size: 12px!important;
+        }
+    }
+    @media (max-width:380px) {
+        .input-escada label{
+            font-size: 10px!important;
+        }
+    }

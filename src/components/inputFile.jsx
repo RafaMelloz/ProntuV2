@@ -23,6 +23,5 @@ export function InputFile({label, name, func, inputFileData}){
 
 
 
-
     )
 }
