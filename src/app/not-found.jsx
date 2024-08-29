@@ -4,7 +4,7 @@ export default function NotFoundPage(){
     return(
         <section className="w-full h-screen flex flex-col items-center justify-center">
             <Image 
-                src="/404.svg" 
+                src="/assets/404.svg" 
                 alt="404" 
                 width={240} 
                 height={240} 

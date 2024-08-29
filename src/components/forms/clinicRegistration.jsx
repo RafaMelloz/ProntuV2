@@ -2,7 +2,7 @@
 
 import { InputText } from "../inputText"
 import { InputFile } from "../inputFile"
-import { errorAlert, loadingAlert, successAlert } from "@/utils/alerts";
+import { errorAlert, loadingAlert } from "@/utils/alerts";
 import { api } from "@/lib/axios";
 
 import { useState } from "react";
@@ -13,15 +13,16 @@ export function ClinicRegistration() {
     const [register, setRegister] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    
     const handleFileName = (event) => {
-        const files = Array.from(event.target.files);
-        const fileData = files.map(file => ({
-            url: URL.createObjectURL(file),
+        const file = event.target.files[0];
+        const fileData = {
             name: file.name
-        }));
+        };
         setInputFileData(fileData);
-        changeRegister('logoClinic', fileData[0].url);
+        changeRegister('logoClinic', file);
     };
+
 
     const changeRegister = (id, value) => {
         setRegister(prevData => ({
@@ -58,19 +59,22 @@ export function ClinicRegistration() {
         const promise = api.post("/api/clinic", {
             nameClinic: data.nameClinic,
             logoClinic: data.logoClinic,
-            address: data.address,
+            address: data.address ? data.address : null,
             cpfCnpj: data.cpfCnpj,
             responsibleName: data.responsibleName,
             email: data.email,
             phone: data.phone,
             password: data.password
+        },{
+            headers:{
+                'Content-Type': 'multipart/form-data'
+            }
         });
-
         // Use toast.promise com a Promise
         loadingAlert("Cadastrando...", promise);
-
+        
         // Garantir que isSubmitting será atualizado após a requisição
-        promise.finally(() => setIsSubmitting(false));
+        promise.finally(() => setIsSubmitting(false));        
     }
 
     return (
@@ -88,7 +92,7 @@ export function ClinicRegistration() {
             </div>
 
             <div className="flex justify-between gap-10">
-                <InputText InputId={"email"} labelName={'E-mail:'} required={true} onChange={changeRegister} mask={"email"} val={register.email || ""}/>
+                <InputText InputId={"email"} labelName={'E-mail:'} required={true} onChange={changeRegister} val={register.email || ""}/>
                 <InputText InputId={"phone"} labelName={'Telefone:'} required={true} onChange={changeRegister} mask={"phone"} val={register.phone || ""} max={14} />
             </div>
 
@@ -112,7 +116,7 @@ export function ClinicRegistration() {
                     disabled={isSubmitting}
                     onClick={formValidation}
                 >
-                    {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
+                    Cadastrar
                 </button>
             </div>
         </form>

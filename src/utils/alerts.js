@@ -4,7 +4,7 @@ export const loadingAlert = (msgLoading, promise) => {
     toast.promise(promise,
         {
             loading: msgLoading,
-            success: (data) => data.message,
+            success: (data) => data.data.message,
             error: (err) => err.response.data.message,
         },
         {

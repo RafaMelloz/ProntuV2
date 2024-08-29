@@ -2,22 +2,27 @@ import { GoUpload } from "react-icons/go";
 
 export function InputFile({label, name, func, inputFileData}){
     return(
-        <label htmlFor="logoClinic" className="font-medium w-1/2">
+        <label htmlFor={name} className="text-black dark:text-white font-medium block w-60">
             {label}
             <label
                 htmlFor={name}
-                className="file-prontuario">
+                className="file-prontuario"
+            >
                 <GoUpload className="size-5 stroke-1 mr-3" />
-                {inputFileData.length === 0 ? 'Subir Imagem' : inputFileData[0].name}
+                {inputFileData ? inputFileData.name : 'Subir Imagem'}
             </label>
             <input
                 type="file"
-                id={name}
-                name={name}
+                id={name} 
+                name={name} 
                 className="hidden"
                 accept="image/*"
                 onChange={func}
             />
         </label>
+
+
+
+
     )
 }

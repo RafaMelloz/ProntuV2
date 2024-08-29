@@ -6,7 +6,7 @@ export default function CadastroPage(){
         <main className="flex w-full flex-col sm:flex-row h-screen">
             <div className="w-full py-10 sm:bg-azul-900 sm:p-0  sm:w-1/2 flex items-center justify-center">
                 <Image
-                    src={"/logo.svg"}
+                    src={"/assets/logo.svg"}
                     priority={true}
                     alt="Logo"
                     width={300}
@@ -15,7 +15,7 @@ export default function CadastroPage(){
                 />
 
                 <Image
-                    src={"/minLogo.svg"}
+                    src={"/assets/minLogo.svg"}
                     priority={true}
                     alt="Logo"
                     width={150}
