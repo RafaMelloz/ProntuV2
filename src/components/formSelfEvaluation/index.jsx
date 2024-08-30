@@ -7,8 +7,12 @@ import { UncomfortableAreas } from "./steps/uncomfortableAreas";
 import { Symptoms } from "./steps/symptoms";
 import { MoreSymptoms } from "./steps/moreSymptoms";
 
+import { errorAlert, loadingAlert } from "@/utils/alerts";
+import { isValidCPF, isValidDate } from "@/utils/validations";
+import { api } from "@/lib/axios";
 
-export function FormSelfEvaluation() {
+
+export function FormSelfEvaluation({clinicID}) {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         personalDetails: {},
@@ -19,6 +23,7 @@ export function FormSelfEvaluation() {
     const sectionScroll = useRef(null);
     const [modal, setModal] = useState(false);
     const [terms, setTerms] = useState(false);
+    const [loadingForm, setLoadingForm] = useState(false);
 
 
     const scrollToTop = () => {
@@ -50,54 +55,48 @@ export function FormSelfEvaluation() {
     };
 
     const conditionsForNextStep = () => {
-        if (step !== 4) {
-            setStep(step + 1);	
-            scrollToTop(); 
-        } else{
-            setModal(true);
+        const { personalDetails, uncomfortableAreas, symptoms, moreSymptoms } = formData;
+
+        if (step === 1) {
+            if (!personalDetails.name || !personalDetails.birth_date || !personalDetails.phone || !personalDetails.cpf || !personalDetails.profession || !personalDetails.how_know_us) {
+                errorAlert('Preencha todos os campos obrigatórios para continuar!');
+            } else if (!isValidCPF(personalDetails.cpf)) {
+                errorAlert('CPF inválido!');
+            } else if (!isValidDate(personalDetails.birth_date)) {
+                errorAlert('Data de nascimento inválida!');
+            } else if (personalDetails.phone.length < 14) {
+                errorAlert('Telefone inválido!');
+            } else {
+                setStep(step + 1);
+                scrollToTop();
+            }
         }
-        // const { personalDetails, uncomfortableAreas, symptoms, moreSymptoms } = formData;
 
-        // if (step === 1) {
-        //     if (!personalDetails.name || !personalDetails.birth_date || !personalDetails.phone || !personalDetails.cpf || !personalDetails.profession || !personalDetails.how_know_us) {
-        //         toastErrorAlert('Preencha todos os campos obrigatórios para continuar!');
-        //     } else if (!isValidCPF(personalDetails.cpf)) {
-        //         toastErrorAlert('CPF inválido!');
-        //     } else if (!isValidDate(personalDetails.birth_date)) {
-        //         toastErrorAlert('Data de nascimento inválida!');
-        //     } else if (personalDetails.phone.length < 14) {
-        //         toastErrorAlert('Telefone inválido!');
-        //     } else {
-        //         setStep(step + 1);
-        //         scrollToTop();
-        //     }
-        // }
+        if (step === 2) {
+            if (!uncomfortableAreas.blob) {
+                errorAlert('Tire a captura da imagem!');
+            } else {
+                setStep(step + 1);
+                scrollToTop();
+            }
+        }
 
-        // if (step === 2) {
-        //     if (!uncomfortableAreas.blob) {
-        //         toastErrorAlert('Tire a captura da imagem!');
-        //     } else {
-        //         setStep(step + 1);
-        //         scrollToTop();
-        //     }
-        // }
+        if (step === 3) {
+            if (!symptoms.description || !symptoms.cause || !symptoms.discomforts || symptoms.discomforts.length === 0 || !symptoms.frequency) {
+                errorAlert('Preencha todos os campos obrigatórios para continuar!');
+            } else {
+                setStep(step + 1);
+                scrollToTop();
+            }
+        }
 
-        // if (step === 3) {
-        //     if (!symptoms.description || !symptoms.cause || !symptoms.discomforts || symptoms.discomforts.length === 0 || !symptoms.frequency) {
-        //         toastErrorAlert('Preencha todos os campos obrigatórios para continuar!');
-        //     } else {
-        //         setStep(step + 1);
-        //         scrollToTop();
-        //     }
-        // }
-
-        // if (step === 4) {
-        //     if (!moreSymptoms.discomfortIncreases || moreSymptoms.discomfortIncreases.length === 0 || !moreSymptoms.discomfortDecreases || moreSymptoms.discomfortDecreases.length === 0) {
-        //         toastErrorAlert('Preencha todos os campos obrigatórios para continuar!');
-        //     } else {
-        //         setModal(true);
-        //     }
-        // }
+        if (step === 4) {
+            if (!moreSymptoms.discomfortIncreases || moreSymptoms.discomfortIncreases.length === 0 || !moreSymptoms.discomfortDecreases || moreSymptoms.discomfortDecreases.length === 0) {
+                errorAlert('Preencha todos os campos obrigatórios para continuar!');
+            } else {
+                setModal(true);
+            }
+        }
     };
 
     const retornaStep = () => {
@@ -117,9 +116,61 @@ export function FormSelfEvaluation() {
         setTerms(e.target.checked);
     }
 
+
+    const submitForm = async () => {
+        if (!terms) {
+            errorAlert('Aceite o termo de compromisso para continuar');
+            return;
+        } else{
+            const { personalDetails, uncomfortableAreas, symptoms, moreSymptoms } = formData;
+            setLoadingForm(true);
+
+            const promise = api.post("/api/selfEvaluation", {
+                name: personalDetails.name,
+                birth_date: personalDetails.birth_date,
+                phone: personalDetails.phone,
+                cpf: personalDetails.cpf,
+                profession: personalDetails.profession,
+                email: personalDetails.email,
+                address: personalDetails.address,
+                how_know_us: personalDetails.how_know_us,
+
+                image: uncomfortableAreas.blob,
+
+                cause: symptoms.cause,
+                description: symptoms.description,
+                discomforts: symptoms.discomforts,
+                frequency: symptoms.frequency,
+
+                discomfortIncreases: moreSymptoms.discomfortIncreases,
+                discomfortDecreases: moreSymptoms.discomfortDecreases,
+                geralState: moreSymptoms.geralState,
+                headNeck: moreSymptoms.headNeck,
+                thoraxRespiratory: moreSymptoms.thoraxRespiratory,
+                cardioVascular: moreSymptoms.cardioVascular,
+                gastroIntestinal: moreSymptoms.gastroIntestinal,
+                genitoUrinary: moreSymptoms.genitoUrinary,
+
+                idClinic: clinicID
+            }, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            loadingAlert("Cadastrando...", promise);
+
+            promise.finally(() => {
+                setLoadingForm(false)
+                setModal(false);
+                clearFormData();
+                setStep(1)
+            });
+        }
+    }
+
     return (
-        <main className="fit-container screen-with-subtitle pt-9 pb-5 flex flex-col justify-between" ref={sectionScroll} >
-            <form className="overflow-y-auto sm:max-h-[calc(100vh-260px)]">
+        <main className="fit-container screen-with-subtitle pt-9 pb-5 flex flex-col justify-between">
+            <form ref={sectionScroll} className="overflow-y-auto sm:max-h-[calc(100vh-260px)]">
                 {getCompStep()}
             </form>
 
@@ -161,11 +212,11 @@ export function FormSelfEvaluation() {
                             <span className="text-[0.68rem]">*As informações fornecidas estão protegidas segundo a lei LGPD (Lei Geral de Proteção de Dados).</span>
 
                             <div className="flex flex-wrap mt-6 justify-between ">
-                                <button className="text-azul-900 border text-center center border-azul-900 rounded-lg p-3 text-nowrap" onClick={cancelSubmit}>
+                                <button className="text-azul-900 border text-center center border-azul-900 rounded-lg px-3 py-2 text-nowrap" onClick={cancelSubmit}>
                                     Editar auto-avaliação
                                 </button>
 
-                                <button className="text-azul-900 border text-center center border-azul-900 rounded-lg p-3 text-nowrap" onClick={cancelSubmit}>
+                                <button disabled={loadingForm} className={`text-white text-center center hover:bg-azul-900/70 rounded-lg px-3 py-2text-nowrap  ${loadingForm ? "bg-azul-900/50 cursor-not-allowed" : "bg-azul-900"}`} onClick={submitForm}>
                                     Confirmar
                                 </button>
                             </div>

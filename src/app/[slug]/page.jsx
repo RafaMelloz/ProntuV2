@@ -22,7 +22,7 @@ export default async function SelfEvaluation({params}){
     return(
         <>
             <Header subtitle={"Autoavaliação Prontuário de Atendimento de Quiropraxia"} clinic={clinic} />
-            <FormSelfEvaluation />
+            <FormSelfEvaluation clinicID={clinic.idClinic}/>
         </>
     )
 }
