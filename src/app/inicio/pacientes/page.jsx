@@ -1,7 +1,10 @@
+import { Sidebar } from "@/components/sidebar";
+
 export default function PatientsPage() {
     return (
-        <div>
-            <h1>Pacientes</h1>
-        </div>
+        <section className="w-full !h-full flex">
+            <Sidebar />
+            <h1>pacientes</h1>
+        </section>
     )
 }

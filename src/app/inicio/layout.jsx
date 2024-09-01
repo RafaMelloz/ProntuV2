@@ -14,7 +14,7 @@ export default async function HomeLayout({ children }) {
     return(
         <>
             <Header  user={session.user}  clinic={session.user.clinic}/>
-            <main className='fit-container h-screen-header'>
+            <main className='fit-container h-screen-header py-4'>
                 {children}
             </main>
         </>
