@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Login } from "@/components/forms/login";
+import { Authentication } from "@/components/forms/authentication";
 
 export default function LoginPage(){
     return (
@@ -25,7 +25,7 @@ export default function LoginPage(){
             </div>
 
             <div className="w-full bg-white dark:bg-dark-900 sm:w-1/2 flex items-center justify-center textSwitch">
-                <Login />
+                <Authentication />
             </div>
         </main>
     )

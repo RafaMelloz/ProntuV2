@@ -5,13 +5,24 @@ import { InputText } from "../inputText";
 import { signIn } from "next-auth/react";
 import { errorAlert } from "@/utils/alerts";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
-export function Login() {
+export function Authentication() {
     const [statusLogin, setStatusLogin] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [loginData, setDataLogin] = useState({});
+    const router = useRouter();
 
-    const router = useRouter()
+    const toastPromise = () => {
+        toast.promise(
+            saveSettings(settings),
+            {
+                loading: 'Entrando...',
+                success: <b>Settings saved!</b>,
+                error: <b>Could not save.</b>,
+            }
+        );
+    }
 
     const changeLoginData = (id, value) => {
         setDataLogin((prevData) => ({
@@ -19,7 +30,6 @@ export function Login() {
             [id]: value,
         }));
     };
-
 
     const formValidationLogin = (e) => {
         e.preventDefault();
@@ -35,21 +45,52 @@ export function Login() {
     };
 
     const formSubmitLogin = async (data) => {
-        const signInData = await signIn("credentials", {
+        setIsSubmitting(true);
+        const signInPromise = signIn("credentials", {
             codeClinic: data.codeClinic,
             email: data.email,
             password: data.password,
             redirect: false,
         });
-        
-       if (signInData.error) {
-         errorAlert(signInData.error);   
-       } else{
-              router.push("/inicio/calendario");
-       }
-        
+
+        toast.promise(
+            signInPromise.then((signInData) => {
+                if (signInData.error) {
+                    throw new Error(signInData.error); 
+                     // Força o toast a exibir a mensagem de erro
+                }
+                return signInData;
+            }),
+            {
+                loading: 'Fazendo login...',
+                success: 'Login realizado com sucesso!',
+                error: 'Erro no login. Por favor, verifique suas credenciais.',
+            },
+            {
+                position: 'top-right'
+            }
+        ).then(() => {
+            router.push("/inicio/calendario");
+            setIsSubmitting(false);
+        }).finally(() => {
+            setIsSubmitting(false);
+        });
     };
 
+    // const formSubmitLogin = async (data) => {
+    //     const signInData = await signIn("credentials", {
+    //         codeClinic: data.codeClinic,
+    //         email: data.email,
+    //         password: data.password,
+    //         redirect: false,
+    //     });
+
+    //    if (signInData.error) {
+    //      errorAlert(signInData.error);   
+    //    } else{
+    //         router.push("/inicio/calendario");
+    //    }
+    // };
 
     return (
             <section className="bg-white dark:bg-dark-900 w-full flex items-center justify-center textSwitch">
@@ -86,7 +127,7 @@ export function Login() {
                                 Esqueci minha senha
                             </button>
 
-                        <button type="submit" onClick={(e) => formValidationLogin(e)} className="border-2 border-azul-900 bg-azul-900 text-white rounded-lg py-2 px-4 ">
+                        <button type="submit" disabled={isSubmitting} onClick={(e) => formValidationLogin(e)} className={`border-2 text-white rounded-lg py-2 px-4 ${isSubmitting ? "bg-azul-900/50 border-azul-900/20 cursor-not-allowed" : "border-azul-900 bg-azul-900"}`}>
                                 Entrar
                             </button>
                         </div>
