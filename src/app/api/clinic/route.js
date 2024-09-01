@@ -23,8 +23,8 @@ export async function POST(req) {
     const phone = formData.get('phone')
     const password = formData.get('password')
 
-    const fileBuffer = await logoClinic.arrayBuffer();
-    const fileStream = Buffer.from(fileBuffer);
+    const fileBuffer = await logoClinic ? logoClinic.arrayBuffer() : null;
+    const fileStream = fileBuffer !== null ? Buffer.from(fileBuffer): null;
     let logoClinicUrl = "";
 
     try {

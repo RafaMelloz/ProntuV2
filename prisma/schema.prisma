@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -40,6 +34,8 @@ model User {
   clinic     Clinic     @relation(fields: [idClinic], references: [idClinic])
   profileImg String?
   Calendar   Calendar[]
+  accounts   Account[] // Relacionamento para contas de autenticação
+  sessions   Session[] // Relacionamento para sessões de autenticação
 
   @@map("users")
 }
@@ -153,4 +149,43 @@ model Feedback {
   createdAt DateTime @default(now())
 
   @@map("feedback")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            Int // Altere para Int para coincidir com o tipo de ID do seu modelo User
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [idUser], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       Int // Altere para Int para coincidir com o tipo de ID do seu modelo User
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [idUser], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
 }
