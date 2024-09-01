@@ -1,5 +1,6 @@
 import { ThemeSwitch } from "./themeSwitch";
 import { DefaultUser } from "./defaultUser";
+import Image from "next/image";
 
 export function Header({ subtitle, user, clinic}) {
 
@@ -13,7 +14,7 @@ export function Header({ subtitle, user, clinic}) {
                     <div className="border-cinza-900/20 dark:border-dark-100 h-full w-24 flex justify-center items-center border-r-2 ">
                         {
                             logoClinic
-                                ? <img className="w-12 h-12 rounded-full" src={logoClinic} alt="Logo da clinica" fetchPriority="high" />
+                                ? <Image src={logoClinic} alt="Logo da clinica" width={48} height={48} className="rounded-full"/>
                                 : <DefaultUser clinic />
                         }
                     </div>
@@ -27,7 +28,7 @@ export function Header({ subtitle, user, clinic}) {
                     <div className="flex items-center flex-row-reverse pr-4">
                         {
                             user.profileImg
-                                ? <img className="w-12 h-12 rounded-full" src={user.profileImg} alt="Foto de perfil" fetchPriority="high" />
+                                ? <Image src={user.profileImg} alt="Logo da clinica" width={48} height={48} className="rounded-full"/>
                                 : <DefaultUser user />
                         }
                         <span className="text-black dark:text-white text-sm pr-2 sm:text-base font-medium capitalize sm:pr-4">Olá, {user.name}</span>
