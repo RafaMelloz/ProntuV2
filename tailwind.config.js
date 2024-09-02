@@ -18,6 +18,9 @@ export const theme = {
       "screen-header-subtitle-md": "calc(100vh - 144px)",
       "screen-header-subtitle-lg": "calc(100vh - 148px)", 
     },
+    boxShadow:{
+      "dark": "0 1px 3px 0 rgb(255 255 255 / 8%), 0 1px 2px -1px rgb(8 8 8 / 69%);"
+    },
     colors: {
       azul: {
         900: '#5A9CDA',

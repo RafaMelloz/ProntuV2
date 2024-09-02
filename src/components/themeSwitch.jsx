@@ -12,15 +12,15 @@ export function ThemeSwitch() {
   useEffect(() =>  setMounted(true), [])
 
   if (!mounted) return (
-    <ImSpinner8 className="animate-spin mr-10 text-dark dark:text-white"/>
+    <ImSpinner8 className="animate-spin text-dark dark:text-white"/>
   )
 
   if (resolvedTheme === 'dark') {
-    return <FiSun className="text-white cursor-pointer mr-10 p-1.5 hover:bg-azul-900/50 duration-200 rounded-full" size={32} onClick={() => setTheme('light')}/>
+    return <FiSun className="text-white cursor-pointer p-1.5 hover:bg-azul-900/50 duration-200 rounded-full" size={32} onClick={() => setTheme('light')}/>
   }
 
   if (resolvedTheme === 'light') {
-    return <FiMoon className="text-black cursor-pointer mr-10 p-1.5 hover:bg-azul-900/30 duration-200 rounded-full" size={32} onClick={() => setTheme('dark')}/>
+    return <FiMoon className="text-black cursor-pointer p-1.5 hover:bg-azul-900/30 duration-200 rounded-full" size={32} onClick={() => setTheme('dark')}/>
   }
 
 }

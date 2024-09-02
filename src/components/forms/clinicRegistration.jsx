@@ -74,7 +74,9 @@ export function ClinicRegistration() {
         loadingAlert("Cadastrando...", promise);
         
         // Garantir que isSubmitting será atualizado após a requisição
-        promise.finally(() => setIsSubmitting(false));        
+        promise.finally(() => {
+            setIsSubmitting(false)
+        });        
     }
 
     return (

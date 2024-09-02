@@ -27,8 +27,8 @@ export function Header({ subtitle, user, clinic}) {
                 {user ?(
                     <div className="flex items-center flex-row-reverse pr-4">
                         {
-                            user.profileImg
-                                ? <Image src={user.profileImg} alt="Logo da clinica" width={48} height={48} className="rounded-full"/>
+                            user.img
+                                ? <Image src={user.img} alt="Logo da clinica" width={48} height={48} className="rounded-full"/>
                                 : <DefaultUser user />
                         }
                         <span className="text-black dark:text-white text-sm pr-2 sm:text-base font-medium capitalize sm:pr-4">Olá, {user.name}</span>
