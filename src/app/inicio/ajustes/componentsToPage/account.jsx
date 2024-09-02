@@ -5,24 +5,24 @@ import { api } from "@/lib/axios";
 
 
 import { ThemeSwitch } from "@/components/themeSwitch";
-import { DefaultUser } from "@/components/defaultUser";
 import { InputText } from "@/components/inputText";
 
 
 import { GoUpload } from "react-icons/go";
 import { isValidEmail } from "@/utils/validations";
 import { errorAlert, loadingAlert } from "@/utils/alerts"
-import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 
-export function Account({ session }) {
+export function Account() {
     const [loadingForm, setLoadingForm] = useState(false);
     const [editProfile, setEditProfile] = useState({});
     const [removeImg, setRemoveImg] = useState(false);
     const [inputFileData, setInputFileData] = useState(null);
-    const router = useRouter();
 
+    const { data: session, update } = useSession();
     console.log(session);
+    
     
 
     const handleFileName = (event) => {
@@ -87,11 +87,17 @@ export function Account({ session }) {
         });
 
         loadingAlert("Atualizando...", promise);
+        
+        let newImage = (await promise).data.image;
 
         promise.finally(() => {
             setLoadingForm(false)
-            router.refresh();
+            update({ name, email, img: newImage, clinic: session.user.clinic });
         });               
+
+        setTimeout(() => {
+            window.location.reload()
+        }, 1000);
     };
 
     useEffect(() => {

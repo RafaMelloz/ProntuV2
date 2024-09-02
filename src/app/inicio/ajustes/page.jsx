@@ -12,7 +12,7 @@ export default async function ConfigPage() {
     return (
         <section className="w-full !h-full flex justify-between gap-4">
             <Sidebar />
-            <SettingsPanel session={session} />
+            <SettingsPanel session={session}/>
         </section>
     )
 }

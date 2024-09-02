@@ -58,7 +58,15 @@ export const authOptions = {
         })
     ],
     callbacks:{
-        async jwt({ token, user}) {
+        async jwt({ token, user, trigger, session }) {
+
+            if (trigger === 'update') {
+                token.name = session.name;
+                token.email = session.email;
+                token.img = session.img;
+                token.clinic = session.clinic;
+            }
+
             if (user) {
                 return {
                     ...token,

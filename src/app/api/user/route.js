@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hash } from "argon2";
 import cloudinary from 'cloudinary';
-import { parse } from "path";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -90,7 +89,7 @@ export async function PUT(req){
             });
         }
 
-        return NextResponse.json({ message: 'Usuário atualizado com sucesso!' });
+        return NextResponse.json({ message: 'Usuário atualizado com sucesso!', image: uploadResult ? uploadResult.secure_url : user.profileImg });
 
     }catch(e){
         console.log(e)
