@@ -64,7 +64,8 @@ export const authOptions = {
                 token.name = session.name;
                 token.email = session.email;
                 token.img = session.img;
-                token.clinic = session.clinic;
+                token.clinic.nameClinic = session.clinic.nameClinic;
+                token.clinic.logoClinic = session.clinic.logoClinic;
             }
 
             if (user) {

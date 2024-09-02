@@ -6,6 +6,8 @@ import { api } from "@/lib/axios";
 
 import { ThemeSwitch } from "@/components/themeSwitch";
 import { InputText } from "@/components/inputText";
+import { InputFile } from "@/components/inputFile";
+
 
 
 import { GoUpload } from "react-icons/go";
@@ -20,11 +22,7 @@ export function Account() {
     const [removeImg, setRemoveImg] = useState(false);
     const [inputFileData, setInputFileData] = useState(null);
 
-    const { data: session, update } = useSession();
-    console.log(session);
-    
-    
-
+    const { data: session, update } = useSession();    
     const handleFileName = (event) => {
         const file = event.target.files[0];
         const fileData = {
@@ -38,7 +36,7 @@ export function Account() {
         setRemoveImg(!removeImg);
         setInputFileData(null);
 
-        if (!removeLogo) {
+        if (!removeImg) {
             changeDataProfile('image', 'removed');
         } else {
             changeDataProfile('image', null);
@@ -73,6 +71,7 @@ export function Account() {
     const submitForm = async () => {
         setLoadingForm(true);
         const { name, email, password, image } = editProfile;
+
         const promise = api.put('/api/user', {
             name,
             email,
@@ -92,12 +91,12 @@ export function Account() {
 
         promise.finally(() => {
             setLoadingForm(false)
-            update({ name, email, img: newImage, clinic: session.user.clinic });
+            update({ name, email, img: newImage, clinic: { nameClinic: session.user.clinic.nameClinic, logoClinic: session.user.clinic.logoClinic } });
         });               
 
         setTimeout(() => {
             window.location.reload()
-        }, 1000);
+        }, 100);
     };
 
     useEffect(() => {
@@ -115,31 +114,14 @@ export function Account() {
             </div>
 
             {!removeImg && (
-                <label htmlFor="fotoPerfil" className="text-black dark:text-white font-medium block w-60">
-                    Foto de Perfil:
-                    <label
-                        htmlFor="fotoPerfil"
-                        className="file-prontuario"
-                    >
-                        <GoUpload className="size-5 stroke-1 mr-3" />
-                        {inputFileData ? inputFileData.name : 'Subir Imagem'}
-                    </label>
-                    <input
-                        type="file"
-                        id="fotoPerfil"
-                        name="fotoPerfil"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleFileName}
-                    />
-                </label>
+                <InputFile name={"fotoPerfil"} inputFileData={inputFileData} func={handleFileName}/>
             )}
 
-            {session.user.profileImg && (
+            {session.user.img && (
                 <div className="w-full flex d">
                     <label htmlFor="removeLogo" className="text-black dark:text-white font-medium block mt-2">
                         Remover foto de perfil:
-                        <input type="checkbox" id="removeLogo" name="removeLogo" className="ml-2" onChange={removeLogoClinic} />
+                        <input type="checkbox" id="removeLogo" name="removeLogo" className="ml-2" onChange={removeImgProfile} />
                     </label>
                 </div>
             )}
@@ -158,7 +140,7 @@ export function Account() {
             </div>
 
             <div className="w-full flex justify-end mt-5">
-                <button className="bg-azul-900 text-white rounded-md py-2 px-4" onClick={validateForm}>
+                <button disabled={loadingForm} className={`text-white rounded-md py-2 px-4 ${loadingForm ? "bg-azul-900/50 cursor-not-allowed" : "bg-azul-900"}`} onClick={validateForm}>
                     Salvar alterações
                 </button>
             </div>

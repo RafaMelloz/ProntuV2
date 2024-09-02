@@ -23,8 +23,6 @@ export async function POST(req) {
     const formData = await req.formData();
     const idClinic = formData.get('idClinic');
 
-    console.log(formData);
-
     const name = formData.get('name');
     const birth_date = formData.get('birth_date');
     const phone = formData.get('phone');

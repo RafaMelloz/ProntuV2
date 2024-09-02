@@ -10,8 +10,8 @@ cloudinary.config({
 });
 
 
-export async function PUT(req){
-    const formData = await req.formData();    
+export async function PUT(req) {
+    const formData = await req.formData();
 
     const clinicId = formData.get('clinicId');
     const userId = formData.get('userId');
@@ -20,12 +20,11 @@ export async function PUT(req){
     const password = formData.get('password');
     const image = formData.get('image')
 
-    const fileBuffer = image ? await image.arrayBuffer() : null;
+    const fileBuffer = image && image !== "removed" ? await image.arrayBuffer() : null;
     const fileStream = fileBuffer !== null ? Buffer.from(fileBuffer) : null;
-    let uploadResult
-    
+    let imgUrl;
 
-    try{
+    try {
         const user = await prisma.user.findUnique({
             where: { idUser: parseInt(userId) },
             select: { profileImg: true, idClinic: true }
@@ -39,22 +38,22 @@ export async function PUT(req){
         }) === 0;
 
         if (!user || user.idClinic !== parseInt(clinicId)) {
-            return NextResponse.json({message: 'Usuário não encontrado'}, {status: 404});
+            return NextResponse.json({ message: 'Usuário não encontrado' }, { status: 404 });
         }
 
         if (!isEmailAvailable) {
             return NextResponse.json({ message: 'Email não disponível' }, { status: 400 });
         }
 
-
-        if (image && image.value === 'removed') {
-            cloudinary.v2.uploader.destroy(`profileImg${userId}`)
+        if (image && image === 'removed') {
+            await cloudinary.v2.uploader.destroy(`profileImg${userId}`);
+            imgUrl = "";
         } else if (image) {
             if (user.profileImg) {
-                cloudinary.v2.uploader.destroy(`profileImg${userId}`)
+                await cloudinary.v2.uploader.destroy(`profileImg${userId}`);
             }
 
-            uploadResult = await new Promise((resolve, reject) => {
+            imgUrl = await new Promise((resolve, reject) => {
                 cloudinary.v2.uploader.upload_stream({ resource_type: "auto", public_id: `profileImg${userId}` },
                     (error, result) => {
                         if (error) {
@@ -65,36 +64,32 @@ export async function PUT(req){
                     }).end(fileStream);
             });
         }
-        	        
+
+        const updatedProfileImg = image === "removed" ? ""
+            : imgUrl && imgUrl.secure_url ? imgUrl.secure_url
+            : user.profileImg;
+
+        const dataToUpdate = {
+            name,
+            email,
+            profileImg: updatedProfileImg
+        };
 
         if (password && password.value !== '') {
-            const hashedPassword = await hash(password);
-            await prisma.user.update({
-                where: { idUser: parseInt(userId) },
-                data: {
-                    name,
-                    email,
-                    password: hashedPassword,
-                    profileImg: uploadResult ? uploadResult.secure_url : user.profileImg
-                },
-            });
-        } else {
-            await prisma.user.update({
-                where: { idUser: parseInt(userId) },
-                data: {
-                    name,
-                    email,
-                    profileImg: uploadResult ? uploadResult.secure_url : user.profileImg
-                }
-            });
+            dataToUpdate.password = await hash(password);
         }
 
-        return NextResponse.json({ message: 'Usuário atualizado com sucesso!', image: uploadResult ? uploadResult.secure_url : user.profileImg });
+        await prisma.user.update({
+            where: { idUser: parseInt(userId) },
+            data: dataToUpdate
+        });
 
-    }catch(e){
-        console.log(e)
-        return NextResponse.json({message: 'Erro ao atualizar o usuário'}, {status: 500});
+        return NextResponse.json({ message: 'Usuário atualizado com sucesso!', image: updatedProfileImg });
+
+    } catch (e) {
+        console.log(e);
+        return NextResponse.json({ message: 'Erro ao atualizar o usuário' }, { status: 500 });
     }
-
 }
+
 

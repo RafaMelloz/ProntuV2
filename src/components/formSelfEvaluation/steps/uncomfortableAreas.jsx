@@ -143,7 +143,6 @@ export function UncomfortableAreas({ setFormData }) {
             tempCanvas.toBlob((blob) => {
                 if (blob) {
                     const url = URL.createObjectURL(blob);
-                    console.log(url, blob);
 
                     setFormData((prevFormData) => ({
                         ...prevFormData,
