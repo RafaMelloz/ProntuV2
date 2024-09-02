@@ -96,7 +96,7 @@ export function Account() {
 
         setTimeout(() => {
             window.location.reload()
-        }, 100);
+        }, 1000);
     };
 
     useEffect(() => {
@@ -140,7 +140,7 @@ export function Account() {
             </div>
 
             <div className="w-full flex justify-end mt-5">
-                <button disabled={loadingForm} className={`text-white rounded-md py-2 px-4 ${loadingForm ? "bg-azul-900/50 cursor-not-allowed" : "bg-azul-900"}`} onClick={validateForm}>
+                <button disabled={loadingForm} className={`text-white rounded-md py-2 font-semibold px-4 ${loadingForm ? "bg-azul-900/50 cursor-not-allowed" : "bg-azul-900"}`} onClick={validateForm}>
                     Salvar alterações
                 </button>
             </div>

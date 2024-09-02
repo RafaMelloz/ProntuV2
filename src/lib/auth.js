@@ -49,6 +49,7 @@ export const authOptions = {
                     img: existingUser.profileImg,
                     clinic: {
                         id: existingClinic.idClinic,
+                        codeClinic: existingClinic.codeClinic,
                         nameClinic: existingClinic.nameClinic,
                         logoClinic: existingClinic.logoClinic,
                         slug: existingClinic.clinicSlug,

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hash } from "argon2";
 import cloudinary  from 'cloudinary';
+import { parse } from "path";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -100,5 +101,68 @@ export async function POST(req) {
     } catch (error) {
         console.log(error);
         return NextResponse.json({ message: 'Erro ao cadastrar a clínica' }, { status: 500 });
+    }
+}
+
+export async function PUT(req){
+    const formData = await req.formData();
+    const nameClinic = formData.get('nameClinic')
+    const logoClinic = formData.get('logoClinic')
+    const clinicId = formData.get('clinicId')
+
+    const fileBuffer = logoClinic && logoClinic !== "removed" ? await logoClinic.arrayBuffer() : null;
+    const fileStream = fileBuffer !== null ? Buffer.from(fileBuffer) : null;
+    let imgUrl;
+
+    const clinic = await prisma.clinic.findUnique({
+        where: { idClinic: parseInt(clinicId) },
+        select: { codeClinic: true, logoClinic: true, nameClinic: true }
+    });
+
+    if (!clinic) {
+        return NextResponse.json({ message: 'Clínica não encontrada' }, { status: 404 });
+    }
+
+    if (nameClinic === '') {
+        return NextResponse.json({ message: 'Nome da clínica não pode estar vazio' }, { status: 400 });
+    }
+
+    try {
+        if (logoClinic && logoClinic === 'removed') {
+            await cloudinary.v2.uploader.destroy(`logo_${clinic.nameClinic}`);
+            imgUrl = "";
+        } else if (logoClinic) {
+            if (clinic.logoClinic) {
+                await cloudinary.v2.uploader.destroy(`logo_${clinic.nameClinic}`);
+            }
+
+            imgUrl = await new Promise((resolve, reject) => {
+                cloudinary.v2.uploader.upload_stream({ resource_type: "auto", public_id: `logo_${clinic.nameClinic}` },
+                    (error, result) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve(result);
+                        }
+                    }).end(fileStream);
+            });
+
+        }
+        const updatedLogo = logoClinic === "removed" ? ""
+        : imgUrl && imgUrl.secure_url ? imgUrl.secure_url
+        : clinic.logoClinic;
+        
+        await prisma.clinic.update({
+            where: { idClinic: parseInt(clinicId) },
+            data: {
+                nameClinic ,
+                logoClinic: updatedLogo
+            },
+        });
+
+            return NextResponse.json({ message: 'Clinica atualizada com sucesso', image: updatedLogo });
+    } catch (e) {
+        console.log(e);
+        return NextResponse.json({ message: 'Erro ao atualizar a clinica' }, { status: 500 });
     }
 }
