@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { hash } from "@/lib/argon2";
+import { parse } from "path/posix";
 
 export async function POST(req){
     const session = await getServerSession(authOptions);
@@ -79,4 +80,34 @@ export async function POST(req){
         console.log(e);
         return NextResponse.json({ message: "Erro ao cadastrar acesso" },{status:500});
     }
+}
+
+export async function GET(req){
+    const clinicId = req.nextUrl.searchParams.get('clinicId');
+
+    try {
+        const users = await prisma.user.findMany({
+            where: {
+                idClinic: parseInt(clinicId),
+                role: {
+                    not: 'admin'
+                }
+            },
+            select: {
+                idUser: true,
+                name: true,
+                email: true,
+                role: true,
+                profileImg: true
+            }
+        });
+
+        return NextResponse.json(users);
+    } catch (e) {
+        console.log(e);
+        return NextResponse.json({ message: "Erro ao buscar acessos" },{status:500});
+    }
+
+    
+
 }
