@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hash } from "argon2";
 import cloudinary from 'cloudinary';
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -11,6 +14,13 @@ cloudinary.config({
 
 
 export async function PUT(req) {
+
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+        return NextResponse.json({ message: 'Rota indisponível' }, { status: 401 });
+    }
+
     const formData = await req.formData();
 
     const clinicId = formData.get('clinicId');

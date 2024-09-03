@@ -18,9 +18,9 @@ export function SettingsPanel({session}) {
     const getOptions = () => {
         switch (controller) {
             case 1:
-                return <Account session={session} />;
+                return <Account/>;
             case 2:
-                return <Access />;
+                return <Access/>;
             case 3:
                 return <ClinicConfig />;
             default:

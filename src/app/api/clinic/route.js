@@ -2,16 +2,14 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { hash } from "argon2";
 import cloudinary  from 'cloudinary';
-import { parse } from "path";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET // Click 'View API Keys' above to copy your API secret
 });
-
-
-
 
 export async function POST(req) {
     const formData = await req.formData();
@@ -105,6 +103,13 @@ export async function POST(req) {
 }
 
 export async function PUT(req){
+    const session = await getServerSession(authOptions);
+
+    if (!session || session.user.role !== 'admin') {
+        return NextResponse.json({ message: 'Você não possui permissão' }, { status: 401 });
+    }
+
+
     const formData = await req.formData();
     const nameClinic = formData.get('nameClinic')
     const logoClinic = formData.get('logoClinic')
