@@ -40,7 +40,9 @@ export function SettingsPanel({session}) {
                 ) : <h3 onClick={() => handleController(1)} className={`text-lg md:text-xl font-semibold px-2 cursor-pointer ${controller === 1 ? 'text-azul-900 border-b-2 border-azul-900' : 'text-cinza-900 border-b-2 border-cinza-900'}`}>Conta e segurança</h3>}
             </div>
             <SessionProvider session={session}>
-                {getOptions()}
+                <section className="h-[calc(100%-30px)]">
+                    {getOptions()}
+                </section>
             </SessionProvider>
         </div>
     )

@@ -1,4 +1,5 @@
 import toast from "react-hot-toast";
+import { LuCheck, LuX } from "react-icons/lu";
 
 export const loadingAlert = (msgLoading, promise) => {
     toast.promise(promise,
@@ -27,3 +28,28 @@ export const errorAlert = (msgSuccess) => {
     });
 };
 
+export const confirmAlert = (msg, confirmFunction) => {
+    toast((t) => (
+        <div>
+            <p>{msg}</p>
+
+            <div className="flex justify-between gap-2 mt-5">
+                <button className="text-white bg-vermelho-900 rounded w-full flex justify-center items-center" onClick={() => toast.dismiss(t.id)}>
+                    <LuX size={22} />
+                </button>
+
+                <button className="text-white bg-verde-900 rounded w-full flex justify-center items-center" onClick={() => {
+                    confirmFunction(); // Executa a função de confirmação
+                    toast.dismiss(t.id); // Fecha o alerta
+                }}>
+                    <LuCheck  size={22}/>
+                </button>
+            </div>
+        </div>
+    ),
+        {
+            position: 'top-right',
+            duration: 5000
+        }
+    );
+};

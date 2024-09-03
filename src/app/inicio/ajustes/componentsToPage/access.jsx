@@ -6,7 +6,7 @@ import { FaPlus } from "react-icons/fa";
 import { DefaultUser } from "@/components/defaultUser";
 import { isValidEmail } from "@/utils/validations";
 import { api } from "@/lib/axios";
-import { errorAlert, loadingAlert } from "@/utils/alerts"
+import { confirmAlert, errorAlert, loadingAlert } from "@/utils/alerts"
 import { InputText } from "@/components/inputText";
 import { useSession } from "next-auth/react";
 import { ImSpinner8 } from "react-icons/im";
@@ -86,8 +86,50 @@ export function Access(){
         promise.finally(() => {
             setLoading(false)
             clearForm()
+            getAccesses();
         });
     };
+
+    const editAccessForm = async () => {        
+        setLoading(true);
+        const { name, email, role } = newAccess;
+        const promise = api.put('/api/accesses', {
+            name,
+            email,
+            role,
+        }, {
+            params: {
+                clinicId: session.user.clinic.id,
+                id: editUserId
+            }
+        });
+
+        loadingAlert("Editando...", promise);
+
+        promise.finally(() => {
+            setLoading(false)
+            clearForm()
+            getAccesses();
+        });
+    };
+
+    const confirmDel = async (id) => {
+        confirmAlert('Deseja realmente excluir este acesso?', async () => {
+            const promise = api.delete('/api/accesses', {
+                params: {
+                    clinicId: session.user.clinic.id,
+                    id: id
+                }
+            });
+
+            loadingAlert("Excluindo...", promise);
+
+            promise.finally(() => {
+                    getAccesses();
+                }
+            );
+        });
+    }
 
     const getAccesses = async () => {
         setLoading(true);
@@ -112,7 +154,7 @@ export function Access(){
     
 
     return (
-        <section className="w-full !h-full overflow-y-auto pb-10">
+        <section className="w-full max-h-full overflow-y-auto pb-4">
             <h2 className="text-2xl font-semibold">Acessos</h2>
             <p className="mb-5">Você poderá escolher até 5 acessos para o aplicativo.</p>
 
@@ -192,7 +234,7 @@ export function Access(){
 
                 {editAccessStatus && (
                     <div className="flex gap-4">
-                        <button disabled={loading} className={`text-white rounded-md py-2 font-semibold px-4 flex w-fit items-center ${loading ? "bg-azul-900/50 cursor-not-allowed" : "bg-azul-900"}`} onClick={() => validateForm(editAccess)}> 
+                        <button disabled={loading} className={`text-white rounded-md py-2 font-semibold px-4 flex w-fit items-center ${loading ? "bg-azul-900/50 cursor-not-allowed" : "bg-azul-900"}`} onClick={() => validateForm(editAccessForm)}> 
                             Confirmar edição
                         </button>
 

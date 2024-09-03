@@ -107,7 +107,7 @@ export function Account() {
 
 
     return (
-        <section className="w-full !h-full">
+        <section className="w-full !h-full overflow-y-auto overflow-x-hidden">
             <div className="flex justify-between items-center">
                 <h2 className="text-black dark:text-white text-2xl font-semibold mb-2">Conta</h2>
                 <ThemeSwitch />
