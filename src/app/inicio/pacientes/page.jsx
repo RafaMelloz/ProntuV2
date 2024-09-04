@@ -1,10 +1,33 @@
 import { Sidebar } from "@/components/sidebar";
+import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import Link from "next/link";
+import { FaPlus } from "react-icons/fa";
 
-export default function PatientsPage() {
+export default async function PatientsPage() {
+
+    const session = await getServerSession(authOptions)    
+    const idClinic = session.user.clinic.id
+
+    const patients = await prisma.patient.findMany({
+        where:{
+            idClinic
+        },
+
+    })
+
+    console.log(patients);
+    
+
     return (
         <section className="w-full !h-full flex">
             <Sidebar />
-            <h1>pacientes</h1>
+            
+            <Link href={`/inicio/pacientes/${idClinic}`}>
+                <FaPlus/> Adicionar Paciente
+            </Link>
+            
         </section>
     )
 }
