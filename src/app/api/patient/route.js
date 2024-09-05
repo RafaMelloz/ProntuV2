@@ -17,7 +17,7 @@ export async function POST(req){
     try {
 
         if (email) {    
-            const isEmailAvailable = await prisma.user.count({
+            const isEmailAvailable = await prisma.patient.count({
                 where: {
                     email,
                     idClinic: parseInt(clinicId),
@@ -25,7 +25,7 @@ export async function POST(req){
             }) === 0;
 
             if (!isEmailAvailable) {
-                return NextResponse.json({ message: 'Email já cadastrado' }, { status: 400 });
+                return NextResponse.json({ message: 'Email já cadastrado nesta clinica' }, { status: 400 });
             }
         }
 
@@ -70,5 +70,71 @@ export async function POST(req){
     } catch (e) {
         console.log(e);
         return NextResponse.json({ message: "Erro ao cadastrar paciente" },{status:500});
+    }
+}
+
+export async function PUT(req){
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+        return NextResponse.json({ message: 'Acesso negado' }, { status: 400 });
+    }
+
+    const clinicId = req.nextUrl.searchParams.get('clinicId');
+    const id = req.nextUrl.searchParams.get('id');
+
+    const { name, email, phone, profession, address } = await req.json();
+
+    try {
+        const existingPatient = await prisma.patient.findUnique({
+            where: { idPatient: parseInt(id) },
+        });
+        
+
+        if (email) {
+            const isEmailAvailable = await prisma.patient.count({
+                where: {
+                    email,
+                    idPatient: { not: parseInt(id) },
+                    idClinic: parseInt(clinicId)
+                }
+            }) === 0;
+
+            if (!isEmailAvailable) {
+                return NextResponse.json({ message: 'Email já cadastrado nesta clinica' }, { status: 400 });
+            }
+        }
+
+        const isPhoneAvailable = await prisma.patient.count({
+            where: {
+                phone,
+                idPatient: { not: parseInt(id) },
+                idClinic: parseInt(clinicId),
+            }
+        }) === 0;
+
+        if (!existingPatient || existingPatient.idClinic !== parseInt(clinicId)) {
+            return NextResponse.json({ message: 'Paciente não encontrado' }, { status: 404 });
+        } 
+
+        if (!isPhoneAvailable) {
+            return NextResponse.json({ message: 'Telefone já nesta clinica cadastrado' }, { status: 400 });
+        }
+
+        await prisma.patient.update({
+            where: { idPatient: parseInt(id) },
+            data: {
+                name,
+                email,
+                phone,
+                profession,
+                address
+            },
+        });
+
+        return NextResponse.json({ message: "Paciente editado!" });
+    } catch (e) {
+        console.log(e);
+        return NextResponse.json({ message: "Erro ao editar paciente" },{status:500});
     }
 }
