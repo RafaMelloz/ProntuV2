@@ -60,6 +60,15 @@ body{
 }
 
 
+::-webkit-scrollbar{
+        @apply  w-1 rounded-lg bg-transparent
+    }
+
+::-webkit-scrollbar-thumb{
+    @apply rounded-lg border-2 border-violet-300 bg-gray-400/80  dark:bg-dark-100
+}
+
+
 #ajusteInput33 {
         width: 100%!important;
     }

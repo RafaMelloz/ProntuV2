@@ -2,7 +2,6 @@ import { Sidebar } from "@/components/sidebar";
 import { SettingsPanel } from "./componentsToPage/settingsPanel";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
-import prisma from "@/lib/prisma";
 
 
 
