@@ -2,7 +2,7 @@ import NextAuth from "next-auth"
 import prisma from "./prisma"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials";
-import { verify } from "./argon2"
+import { compare } from "bcrypt";
 
 export const authOptions = {
     adapter: PrismaAdapter(prisma),
@@ -35,7 +35,7 @@ export const authOptions = {
                     throw new Error("Credenciais Inválidas!");
                 }
 
-                const pwMatch = await verify(existingUser.password, credentials.password);
+                const pwMatch = await compare(credentials.password, existingUser.password);
 
                 if (!pwMatch) {
                     throw new Error("Credenciais Inválidas!");

@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { hash } from "argon2";
 import cloudinary from 'cloudinary';
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
+import { hash } from "bcrypt";
 
 
 cloudinary.config({
@@ -86,7 +86,7 @@ export async function PUT(req) {
         };
 
         if (password && password.value !== '') {
-            dataToUpdate.password = await hash(password);
+            dataToUpdate.password = await hash(password, 10);
         }
 
         await prisma.user.update({

@@ -4,8 +4,8 @@ import resend from "@/lib/resend";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { hash } from "@/lib/argon2";
 import cloudinary from 'cloudinary';
+import { hash } from "crypto";
 
 
 cloudinary.config({
@@ -59,7 +59,7 @@ export async function POST(req){
         const randomFistNumber = Math.floor(Math.random() * 100);
         const randomSecondNumber = Math.floor(Math.random() * 100);
         const password = `${randomFistNumber}${prefixEmail}${randomSecondNumber}`;
-        const hashedPassword = await hash(password); 
+        const hashedPassword = await hash(password, 10);  
 
         const user = await prisma.user.create({
             data: {

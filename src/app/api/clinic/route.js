@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { hash } from "argon2";
 import cloudinary  from 'cloudinary';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { hash } from "bcrypt";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -77,7 +77,7 @@ export async function POST(req) {
                 throw new Error('Falha ao atualizar o codeClinic da clínica');
             }
 
-            const hashedPassword = await hash(password);
+            const hashedPassword = await hash(password, 10);
             const user = await prisma.user.create({
                 data: {
                     name: responsibleName,
