@@ -2,8 +2,17 @@ import Link from "next/link";
 import prisma  from "@/lib/prisma";
 import { TbChevronLeft } from "react-icons/tb";
 import { MedicalContent } from "../componentsToPage/medicalContent";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function PatientsRecordPage({params}) {
+
+    const session = await getServerSession(authOptions);
+
+    if (session.user.role === 'secretaria') {
+        redirect('/acessoNegado')
+    }
 
     const transformAdjustmentAreasBack = (adjustmentAreasArray) => {
         const adjustmentAreas = {};

@@ -158,7 +158,7 @@ export function Access(){
             <h2 className="text-2xl font-semibold">Acessos</h2>
             <p className="mb-5">Você poderá escolher até 5 acessos para o aplicativo.</p>
 
-            <div className="flex flex-col gap-5 max-w-4xl max-h-64 overflow-y-auto py-2">
+            <div className="flex flex-col gap-5 max-w-4xl max-h-64 overflow-y-auto py-2 px-2">
                 {loading
                     ? <ImSpinner8 className="animate-spin m-auto text-azul-900/80" size={32}/>
                     : (

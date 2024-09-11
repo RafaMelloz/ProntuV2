@@ -662,7 +662,7 @@ export function MedicalContent({ symptoms, medicalRecord, gallery, exams, servic
 
             <section className="w-full flex justify-end mb-5">
                 {editingIndex === null && (
-                    <button className={`font-semibold p-4 rounded-lg ${loading ? 'bg-azul-900/50 cursor-not-allowed' : 'bg-azul-900'}`} disabled={loading} onClick={(event) => validateForm(event)}>
+                    <button className={`font-semibold p-4 rounded-lg text-white ${loading ? 'bg-azul-900/50 cursor-not-allowed' : 'bg-azul-900'}`} disabled={loading} onClick={(event) => validateForm(event)}>
                         Salvar e encerrar atendimento
                     </button>
                 )}
