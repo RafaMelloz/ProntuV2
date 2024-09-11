@@ -60,6 +60,30 @@ body{
 }
 
 
+
+.options-input {
+    @apply hidden;
+}
+.options-label {
+    @apply flex items-center justify-center p-[5px] cursor-pointer font-bold;
+}
+.options-input:checked + .options-label {
+    @apply bg-azul-700 dark:bg-dark-500;
+}
+.options-input:not(:checked) + .options-label {
+    @apply bg-white dark:bg-dark-600;
+}
+.options-label {
+    @apply flex items-center justify-center p-[5px] cursor-pointer font-bold min-w-4;
+}
+.options-input:checked + .options-label {
+    @apply bg-azul-700 dark:bg-dark-500;
+}
+.options-input:not(:checked) + .options-label {
+    @apply bg-white dark:bg-dark-600;
+}
+
+
 ::-webkit-scrollbar{
         @apply  w-1 rounded-lg bg-transparent
     }
