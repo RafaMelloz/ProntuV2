@@ -75,7 +75,7 @@ export async function POST(req){
         if (user) {
             await resend.emails.send({
                 // from: 'contato@prontue.com',
-                from: 'Acme <onboarding@resend.dev>',
+                from: process.env.RESEND_FROM,
                 to: email,
                 subject: 'Bem-vindo ao Prontu e Ponto!',
                 html: generateEmailTemplate(name, clinic.nameClinic, clinic.codeClinic, email, password),
