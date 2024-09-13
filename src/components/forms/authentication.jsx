@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { InputText } from "../inputText";
 import { signIn } from "next-auth/react";
-import { errorAlert } from "@/utils/alerts";
+import { errorAlert, loadingAlert } from "@/utils/alerts";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { api } from "@/lib/axios";
 
 export function Authentication() {
     const [statusLogin, setStatusLogin] = useState(false);
@@ -13,16 +14,6 @@ export function Authentication() {
     const [loginData, setDataLogin] = useState({});
     const router = useRouter();
 
-    const toastPromise = () => {
-        toast.promise(
-            saveSettings(settings),
-            {
-                loading: 'Entrando...',
-                success: <b>Settings saved!</b>,
-                error: <b>Could not save.</b>,
-            }
-        );
-    }
 
     const changeLoginData = (id, value) => {
         setDataLogin((prevData) => ({
@@ -77,20 +68,41 @@ export function Authentication() {
         });
     };
 
-    // const formSubmitLogin = async (data) => {
-    //     const signInData = await signIn("credentials", {
-    //         codeClinic: data.codeClinic,
-    //         email: data.email,
-    //         password: data.password,
-    //         redirect: false,
-    //     });
+    const formForgotPassword = async (e) => {
+        e.preventDefault();
 
-    //    if (signInData.error) {
-    //      errorAlert(signInData.error);   
-    //    } else{
-    //         router.push("/inicio/calendario");
-    //    }
-    // };
+        if (!loginData.codeClinic || !loginData.email) {
+            errorAlert("Por favor, preencha todos os campos.");
+            return;
+        }
+
+        const data = {
+            ...loginData,
+            codeClinic: loginData.codeClinic.toUpperCase(),
+        };
+
+        
+        setIsSubmitting(true);
+        const promise = api.post("/api/forgotPassword", {
+            codeClinic: data.codeClinic,
+            email: data.email,
+        });
+        	
+
+        loadingAlert('Verificando usuário...', promise);
+
+        promise
+        .then((response) => {
+            if (response.status === 200) { // Verifica se o status da resposta é de sucesso
+                router.push("/resetarSenha");  // Recarrega a página se a resposta for sucesso
+            }
+
+        })
+        .finally(() => {
+            setIsSubmitting(false);
+        });
+    };
+
 
     return (
             <section className="bg-white dark:bg-dark-900 w-full flex items-center justify-center textSwitch">
@@ -127,7 +139,7 @@ export function Authentication() {
                                 Esqueci minha senha
                             </button>
 
-                        <button type="submit" disabled={isSubmitting} onClick={(e) => formValidationLogin(e)} className={`border-2 text-white rounded-lg py-2 px-4 ${isSubmitting ? "bg-azul-900/50 border-azul-900/20 cursor-not-allowed" : "border-azul-900 bg-azul-900"}`}>
+                            <button type="submit" disabled={isSubmitting} onClick={(e) => formValidationLogin(e)} className={`border-2 text-white rounded-lg py-2 px-4 ${isSubmitting ? "bg-azul-900/50 border-azul-900/20 cursor-not-allowed" : "border-azul-900 bg-azul-900"}`}>
                                 Entrar
                             </button>
                         </div>
@@ -158,7 +170,7 @@ export function Authentication() {
                                 Voltar
                             </button>
 
-                            <button type="button" className="bg-azul-900 text-white rounded-lg py-2 px-4 hover:bg-azul-900/70">
+                            <button type="submit" disabled={isSubmitting} onClick={(e) => formForgotPassword(e)} className={`border-2 text-white rounded-lg py-2 px-4 ${isSubmitting ? "bg-azul-900/50 border-azul-900/20 cursor-not-allowed" : "border-azul-900 bg-azul-900"}`}>
                                 Enviar recuperação de senha
                             </button>
                         </div>
