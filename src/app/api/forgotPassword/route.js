@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { randomBytes } from "crypto";
 import { NextResponse } from "next/server";
 import resend from "@/lib/resend";
+import { PasswordEmail } from "@/components/templates/passwordEmail";
 
 export async function POST(req){
     const {codeClinic, email} = await req.json();
@@ -17,6 +18,8 @@ export async function POST(req){
             return NextResponse.json({ message: "Usuário não encontrado" },{status:404});
         }
 
+        const name = await user.name;
+        const dateLocal = new Date();
 
         // Gera um token de reset aleatório e define o tempo de expiração
         const token = randomBytes(6).toString("hex").slice(0, 6).toUpperCase(); // Código de 6 dígitos
@@ -37,8 +40,8 @@ export async function POST(req){
                 // from: 'contato@prontue.com',
                 from: process.env.RESEND_FROM,
                 to: email,
-                subject: 'Bem-vindo ao Prontu e Ponto!',
-                text: `Seu código de verificação é: ${token}`,
+                subject: 'Mudança de senha',
+                react: PasswordEmail(name, token, dateLocal),
             });
         }        
         

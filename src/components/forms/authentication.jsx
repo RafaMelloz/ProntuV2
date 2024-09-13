@@ -93,9 +93,9 @@ export function Authentication() {
 
         promise
         .then((response) => {
-            if (response.status === 200) { // Verifica se o status da resposta é de sucesso
-                router.push("/resetarSenha");  // Recarrega a página se a resposta for sucesso
-            }
+            // if (response.status === 200) { // Verifica se o status da resposta é de sucesso
+            //     router.push("/resetarSenha");  // Recarrega a página se a resposta for sucesso
+            // }
 
         })
         .finally(() => {
