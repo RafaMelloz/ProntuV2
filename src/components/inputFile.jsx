@@ -9,7 +9,10 @@ export function InputFile({label, name, func, inputFileData}){
                 className="file-prontuario"
             >
                 <GoUpload className="size-5 stroke-1 mr-3" />
-                {inputFileData ? inputFileData.name : 'Subir Imagem'}
+
+                <span className="truncate">
+                    {inputFileData ? inputFileData.name : 'Subir Imagem'}
+                </span>
             </label>
             <input
                 type="file"
