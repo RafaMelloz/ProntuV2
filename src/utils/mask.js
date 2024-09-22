@@ -69,3 +69,32 @@ export function formatHour(value) {
 
     return formattedValue;
 }
+
+export function formatCardNumber(value) {
+    if (!value) return ''; // Retorna uma string vazia se o valor for undefined ou null
+
+    // Remove todos os caracteres não numéricos
+    const cleanedValue = value.replace(/\D/g, '');
+
+    // Formata o número do cartão em blocos de 4 dígitos
+    let formattedValue = '';
+    for (let i = 0; i < cleanedValue.length; i += 4) {
+        formattedValue += cleanedValue.slice(i, i + 4) + ' ';
+    }
+
+    return formattedValue.trim();
+}
+
+export function formatCardExpiry(value) {
+    if (!value) return '';
+
+    // Remove qualquer caractere que não seja número
+    const cleanedValue = value.replace(/\D/g, '');
+
+    // Formata no formato MM/YY
+    if (cleanedValue.length >= 3) {
+        return `${cleanedValue.slice(0, 2)}/${cleanedValue.slice(2, 4)}`;
+    }
+
+    return cleanedValue;
+}
