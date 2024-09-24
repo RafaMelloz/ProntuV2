@@ -8,17 +8,22 @@ datasource db {
 }
 
 model Clinic {
-  idClinic        Int        @id @default(autoincrement())
-  clinicSlug      String     @unique @default(cuid())
+  idClinic        Int     @id @default(autoincrement())
+  clinicSlug      String  @unique @default(cuid())
   nameClinic      String
   logoClinic      String?
   address         String
   responsibleName String
-  cpfCnpj         String     @unique
-  users           User[]
-  patients        Patient[]
-  calendars       Calendar[]
-  codeClinic      String?
+  cpfCnpj         String  @unique
+
+  stripeCustomerId         String?
+  stripeSubscriptionId     String?
+  stripeSubscriptionStatus String?
+
+  users      User[]
+  patients   Patient[]
+  calendars  Calendar[]
+  codeClinic String?
 
   @@map("clinics")
 }

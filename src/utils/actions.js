@@ -1,33 +1,20 @@
-// 'use server'
-
+'use server'
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 // import prisma from "@/lib/prisma";
+import { createCheckoutSession } from "@/lib/stripe";
+import { redirect } from "next/navigation";
 
-// export async function createConsult(clinicId, newEvent) {
-//     const { patientName, dateForListing, dateConsult, hourConsult, consultType, qntReturns, currentReturn, professionalId, phone, notes } = newEvent;
+export async function createSubscriptionAction() {
+    const session = await getServerSession(authOptions);
 
-//     const existPatient = await prisma.patient.findFirst({
-//         where: {
-//             phone,
-//             idClinic: parseInt(clinicId)
-//         }
-//     });
+    if (!session || !session.user) {
+        return null
+    }
 
-//     const newConsult = await prisma.calendar.create({
-//         data: {
-//             idClinic: parseInt(clinicId),
-//             patientId: existPatient ? existPatient.idPatient : null,
-//             professionalId: parseInt(professionalId),
-//             patientName,
-//             dateForListing,
-//             dateConsult,
-//             hourConsult,
-//             consultType,
-//             qntReturns: parseInt(qntReturns),
-//             currentReturn: parseInt(currentReturn),
-//             phone,
-//             notes,
-//         }
-//     });
+    const checkOutSession = await createCheckoutSession(session.user.id, session.user.email)
+    
 
-//     return newConsult;
-// }
+    if (!checkOutSession.url) return null
+    redirect(checkOutSession.url)
+}

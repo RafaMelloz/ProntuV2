@@ -1,9 +1,14 @@
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import cloudinary  from 'cloudinary';
-import { getServerSession } from "next-auth";
+import cloudinary from 'cloudinary';
+import resend from "@/lib/resend";
 import { authOptions } from "@/lib/auth";
+import { createStripeCustomer } from "@/lib/stripe";
 import { hash } from "bcrypt";
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { creatingClinicEmail } from "@/components/templates/creatingClinicEmail";
+
+
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -94,6 +99,23 @@ export async function POST(req) {
             }
             return { user, updatedClinic };
         });
+
+
+
+        if (result) {
+            await createStripeCustomer({
+                email: result.user.email,
+                name: result.user.name
+            });
+
+            await resend.emails.send({
+                // from: 'contato@prontue.com',
+                from: process.env.RESEND_FROM,
+                to: email,
+                subject: 'Bem-vindo ao Prontu e Ponto!',
+                html: creatingClinicEmail(result.user.name, result.updatedClinic.codeClinic),
+            });
+        }
 
         return NextResponse.json({ message: 'Cadastrado com sucesso!' });
     } catch (error) {
