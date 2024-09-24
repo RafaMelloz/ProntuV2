@@ -11,9 +11,6 @@ export default async function PagePlans() {
 
     const plans = [
         { id: 'monthly-plan', name: 'Mensal', price: "300,00" },
-        { id: 'quarterly-plan', name: 'Trimestral', price: "900,00" },
-        { id: 'semester-plan', name: 'Semestral', price: "1600,00" },
-        { id: 'yearly-plan', name: 'Anual', price: "3200,00" }
     ]
 
     return(
