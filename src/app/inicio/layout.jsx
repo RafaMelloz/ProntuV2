@@ -15,7 +15,7 @@ export default async function HomeLayout({ children }) {
         where: { idClinic: session.user.clinic.id }
     })
 
-    if (status.stripePriceId === "price_1Q2dKcGkFz575izvL7r5TRwH") {
+    if (status.stripePriceId === "price_1Q31xB2NQAhIsjZC3gDXWNU1") {
         redirect("/planos");
     }
 

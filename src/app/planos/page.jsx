@@ -17,9 +17,9 @@ export default async function PagePlans() {
             </div>
 
             <form action={createSubscriptionAction} className="max-w-md w-full bg-white rounded-lg shadow-md dark:shadow-sm text-black p-4">
-                <div class="flex flex-col space-y-1.5 p-6">
-                    <h3 class="whitespace-nowrap tracking-tight text-2xl font-bold text-center text-azul-900">Plano Mensal Premium</h3>
-                    <p class="text-sm  text-gray-800 text-center">Comece a otimizar sua gestão hoje</p>
+                <div className="flex flex-col space-y-1.5 p-6">
+                    <h3 className="whitespace-nowrap tracking-tight text-2xl font-bold text-center text-azul-900">Plano Mensal Premium</h3>
+                    <p className="text-sm  text-gray-800 text-center">Comece a otimizar sua gestão hoje</p>
                 </div>
 
                 <div className="space-y-6 px-4">

@@ -5,20 +5,35 @@ export const configStripe = {
     stripe: {
         publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
         secretKey: process.env.STRIPE_SECRET_KEY,
-        webhookSecret: '',
+        webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
         plans:{
             free:{
-                priceId: "price_1Q2dKcGkFz575izvL7r5TRwH"
+                priceId: "price_1Q31xB2NQAhIsjZC3gDXWNU1"
             },
             basic:{
-                priceId: "price_1Q2LP2GkFz575izvyo2exSaB"
+                priceId: "price_1Q31xX2NQAhIsjZCa55Xrau4"
             }
         }
     }
 }
+
+export const getPlanByPriceId = (priceId) => { 
+    const plans = configStripe.stripe.plans
+
+    const planKey = Object.keys(plans).find(key => plans[key].priceId === priceId)
+
+    const plan = planKey ? plans[planKey] : null
+
+    if (!plan) {
+        throw new Error("Plano não encontrado")        
+    }
+
+    return {
+        name: planKey,
+    }
+}
+
 export const stripe = new Stripe(configStripe.stripe.secretKey || '');
-
-
 
 export const getStripeCustomerByEmail = async (email) =>{
     const customers = await stripe.customers.list({ email })
@@ -127,4 +142,43 @@ export const createCheckoutSession = async (userId, customerEmail, userSubscript
         console.log(error)
         throw new Error("Erro ao criar sessão de pagamento");
     }
+}
+
+export const handleProcessWebHookUpdateSubscription = async (event) => {
+    const stripeCustomerId = event.object.customer
+    const stripeSubscriptionId = event.object.id
+    const stripeSubscriptionStatus = event.object.status
+    const stripePriceId = event.object.items.data[0].price.id
+
+    const customerExists = await prisma.clinic.findFirst({
+        where: {
+            OR: [
+                {
+                    stripeCustomerId
+                },
+                {
+                    stripeSubscriptionId
+                }
+            ]   
+        },
+        select:{
+            idClinic: true
+        }   
+    })
+
+    if (!customerExists) {
+       throw new Error("Cliente não encontrado")
+    }
+
+    await prisma.clinic.update({
+        where:{
+            idClinic: customerExists.idClinic
+        },
+        data:{
+            stripeCustomerId,
+            stripeSubscriptionId,
+            stripeSubscriptionStatus,
+            stripePriceId
+        }
+    })
 }
