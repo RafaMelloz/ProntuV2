@@ -8,33 +8,81 @@ export const configStripe = {
         webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
         plans:{
             free:{
-                priceId: "price_1Q31xB2NQAhIsjZC3gDXWNU1"
+                name: "Plano gratuito",
+                priceId: "price_1Q31xB2NQAhIsjZC3gDXWNU1",
+                productId: "prod_QurghWkKDOJTJk"
             },
             basic:{
-                priceId: "price_1Q31xX2NQAhIsjZCa55Xrau4"
+                name: "Plano básico",
+                priceId: "price_1Q31xX2NQAhIsjZCa55Xrau4",
+                productId: "prod_QurgZfW5987qDk"
             }
         }
     }
 }
 
-export const getPlanByPriceId = (priceId) => { 
+export const stripe = new Stripe(configStripe.stripe.secretKey || '');
+
+export const getPlanByPriceId = (priceId) => {
     const plans = configStripe.stripe.plans
 
-    const planKey = Object.keys(plans).find(key => plans[key].priceId === priceId)
-
-    const plan = planKey ? plans[planKey] : null
+    const plan = Object.values(plans).find(plan => plan.priceId === priceId)
 
     if (!plan) {
-        throw new Error("Plano não encontrado")        
+        throw new Error("Plano não encontrado")
     }
 
     return {
-        name: planKey,
+        name: plan.name,
     }
 }
 
-export const stripe = new Stripe(configStripe.stripe.secretKey || '');
+export async function getSubscriptionDetails(subscriptionId) {
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    return subscription;
+}
 
+export async function getLinkForEditPayment(stripeCustomerId) {
+    const configuration = await stripe.billingPortal.configurations.create({
+        business_profile: {
+            privacy_policy_url: 'https://example.com/privacy',
+            terms_of_service_url: 'https://example.com/terms',
+        },
+        features: {
+            subscription_update: {
+                default_allowed_updates: ['price'],
+                enabled: true,
+                products: [
+                    {   
+                        product: configStripe.stripe.plans.free.productId,
+                        prices: [configStripe.stripe.plans.free.priceId], // IDs de preços permitidos
+                    },
+                    {
+                        product: configStripe.stripe.plans.basic.productId,
+                        prices: [configStripe.stripe.plans.basic.priceId], // IDs de preços permitidos
+                    }
+                ],
+            },             
+            payment_method_update: {
+                enabled: true,
+            },
+            invoice_history: {
+                enabled: true,
+            },
+        },
+    });
+
+    const session = await stripe.billingPortal.sessions.create({
+        customer: stripeCustomerId,
+        return_url: `${process.env.NEXT_PUBLIC_HOST_URL}/inicio/ajustes`,
+        configuration: configuration.id,
+    });
+    return session.url;
+}
+
+
+
+// Para criar o cliente e a sessão de pagamento, utilize o código abaixo:
 export const getStripeCustomerByEmail = async (email) =>{
     const customers = await stripe.customers.list({ email })
     return customers.data[0]
@@ -143,6 +191,7 @@ export const createCheckoutSession = async (userId, customerEmail, userSubscript
         throw new Error("Erro ao criar sessão de pagamento");
     }
 }
+///////////////////////////////////////////////////////////////////////////////////////
 
 export const handleProcessWebHookUpdateSubscription = async (event) => {
     const stripeCustomerId = event.object.customer
