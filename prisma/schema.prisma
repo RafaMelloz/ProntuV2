@@ -20,6 +20,7 @@ model Clinic {
   stripeSubscriptionId     String?
   stripeSubscriptionStatus String?
   stripePriceId            String?
+  alreadyAClient           Boolean?
 
   users      User[]
   patients   Patient[]

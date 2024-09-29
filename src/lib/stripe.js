@@ -23,20 +23,6 @@ export const configStripe = {
 
 export const stripe = new Stripe(configStripe.stripe.secretKey || '');
 
-export const getPlanByPriceId = (priceId) => {
-    const plans = configStripe.stripe.plans
-
-    const plan = Object.values(plans).find(plan => plan.priceId === priceId)
-
-    if (!plan) {
-        throw new Error("Plano não encontrado")
-    }
-
-    return {
-        name: plan.name,
-    }
-}
-
 export async function getSubscriptionDetails(subscriptionId) {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     return subscription;
@@ -53,7 +39,7 @@ export async function getLinkForEditPayment(stripeCustomerId) {
                 default_allowed_updates: ['price'],
                 enabled: true,
                 products: [
-                    {   
+                    {
                         product: configStripe.stripe.plans.free.productId,
                         prices: [configStripe.stripe.plans.free.priceId], // IDs de preços permitidos
                     },
@@ -62,7 +48,10 @@ export async function getLinkForEditPayment(stripeCustomerId) {
                         prices: [configStripe.stripe.plans.basic.priceId], // IDs de preços permitidos
                     }
                 ],
-            },             
+            },
+            subscription_cancel: {
+                enabled: true,
+            },
             payment_method_update: {
                 enabled: true,
             },
@@ -80,9 +69,20 @@ export async function getLinkForEditPayment(stripeCustomerId) {
     return session.url;
 }
 
+export const getPlanByPriceId = (priceId) => {
+    const plans = configStripe.stripe.plans
 
+    const plan = Object.values(plans).find(plan => plan.priceId === priceId)
 
-// Para criar o cliente e a sessão de pagamento, utilize o código abaixo:
+    if (!plan) {
+        throw new Error("Plano não encontrado")
+    }
+
+    return {
+        name: plan.name,
+    }
+}
+
 export const getStripeCustomerByEmail = async (email) =>{
     const customers = await stripe.customers.list({ email })
     return customers.data[0]
@@ -127,7 +127,7 @@ export const createStripeCustomer = async (input) =>{
     return createdCustomer
 }
 
-export const createCheckoutSession = async (userId, customerEmail, userSubscriptionId) => {
+export const createBillingSession = async (customerEmail, userSubscriptionId) => {
     try {
         // cria cliente no stripe
         const customer = await createStripeCustomer({
@@ -167,21 +167,6 @@ export const createCheckoutSession = async (userId, customerEmail, userSubscript
             }
         })
 
-        // const session = await stripe.checkout.sessions.create({
-        //     payment_method_types: ['card'],
-        //     mode: 'subscription',
-        //     client_reference_id: userId,
-        //     customer: customer.id,
-        //     success_url: `${process.env.NEXT_PUBLIC_HOST_URL}/inicio/pacientes`,
-        //     cancel_url: `${process.env.NEXT_PUBLIC_HOST_URL}/planos?success=false`,
-        //     line_items: [
-        //         {
-        //             price: configStripe.stripe.plans.basic.priceId,
-        //             quantity: 1
-        //         }
-        //     ]
-        // })
-
         return {
             url: session.url
         }
@@ -191,7 +176,35 @@ export const createCheckoutSession = async (userId, customerEmail, userSubscript
         throw new Error("Erro ao criar sessão de pagamento");
     }
 }
-///////////////////////////////////////////////////////////////////////////////////////
+
+export const createCheckoutSession = async (userId, customerId) => {
+    try {
+        const customer = await stripe.customers.retrieve(customerId);
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            mode: 'subscription',
+            client_reference_id: userId,
+            customer: customer.id,
+            success_url: `${process.env.NEXT_PUBLIC_HOST_URL}/inicio/ajustes`,
+            cancel_url: `${process.env.NEXT_PUBLIC_HOST_URL}/inicio/ajustes`,
+            line_items: [
+                {
+                    price: configStripe.stripe.plans.basic.priceId,
+                    quantity: 1
+                }
+            ]
+        })
+
+        return {
+            url: session.url
+        }
+
+    } catch (error) {
+        console.log(error)
+        throw new Error("Erro ao criar sessão de pagamento");
+    }
+}
 
 export const handleProcessWebHookUpdateSubscription = async (event) => {
     const stripeCustomerId = event.object.customer
@@ -224,10 +237,46 @@ export const handleProcessWebHookUpdateSubscription = async (event) => {
             idClinic: customerExists.idClinic
         },
         data:{
+            alreadyAClient: true,
             stripeCustomerId,
             stripeSubscriptionId,
             stripeSubscriptionStatus,
             stripePriceId
+        }
+    })
+}
+
+export const handleProcessWebHookCancelSubscription = async (event) => {
+    const stripeCustomerId = event.object.customer
+    const stripeSubscriptionId = event.object.id
+
+    const customerExists = await prisma.clinic.findFirst({
+        where: {
+            OR: [
+                {
+                    stripeCustomerId
+                },
+                {
+                    stripeSubscriptionId
+                }
+            ]
+        },
+        select: {
+            idClinic: true
+        }
+    })
+
+    if (!customerExists) {
+        throw new Error("Cliente não encontrado")
+    }
+
+    await prisma.clinic.update({
+        where: {
+            idClinic: customerExists.idClinic
+        },
+        data: {
+            stripeSubscriptionId,
+            stripeSubscriptionStatus: "canceled",
         }
     })
 }

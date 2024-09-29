@@ -8,8 +8,6 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { creatingClinicEmail } from "@/components/templates/creatingClinicEmail";
 
-
-
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -109,7 +107,6 @@ export async function POST(req) {
             });
 
             await resend.emails.send({
-                // from: 'contato@prontue.com',
                 from: process.env.RESEND_FROM,
                 to: email,
                 subject: 'Bem-vindo ao Prontu e Ponto!',

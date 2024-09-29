@@ -1,4 +1,4 @@
-import { handleProcessWebHookUpdateSubscription, stripe } from '@/lib/stripe'
+import { handleProcessWebHookCancelSubscription, handleProcessWebHookUpdateSubscription, stripe } from '@/lib/stripe'
 import { NextResponse } from 'next/server'
 
 export async function POST(req) {
@@ -26,6 +26,8 @@ export async function POST(req) {
         case 'customer.subscription.updated':
             await handleProcessWebHookUpdateSubscription(event.data)
             break
+        case 'customer.subscription.deleted':
+            await handleProcessWebHookCancelSubscription(event.data)
         default:console.log(`Tipo de evento não tratado: ${event.type}`)
     }
 

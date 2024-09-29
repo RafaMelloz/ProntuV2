@@ -54,6 +54,7 @@ export const authOptions = {
                         logoClinic: existingClinic.logoClinic,
                         slug: existingClinic.clinicSlug,
 
+                        stripeCustomerId: existingClinic.stripeCustomerId,
                         stripeSubscriptionId: existingClinic.stripeSubscriptionId,
                         stripeSubscriptionStatus: existingClinic.stripeSubscriptionStatus,
                         stripePriceId: existingClinic.stripePriceId,
