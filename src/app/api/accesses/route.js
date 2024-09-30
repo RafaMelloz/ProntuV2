@@ -7,8 +7,6 @@ import prisma from "@/lib/prisma";
 import cloudinary from 'cloudinary';
 import { hash } from "bcrypt";
 
-
-
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -17,6 +15,7 @@ cloudinary.config({
 
 export async function POST(req){
     const session = await getServerSession(authOptions);
+    console.log(session);
 
     if (!session || session.user.role !== 'admin') {
         return NextResponse.json({ message: 'Você não possui permissão' }, { status: 401 });

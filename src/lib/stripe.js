@@ -7,11 +7,6 @@ export const configStripe = {
         secretKey: process.env.STRIPE_SECRET_KEY,
         webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
         plans:{
-            free:{
-                name: "Plano gratuito",
-                priceId: "price_1Q31xB2NQAhIsjZC3gDXWNU1",
-                productId: "prod_QurghWkKDOJTJk"
-            },
             basic:{
                 name: "Plano básico",
                 priceId: "price_1Q31xX2NQAhIsjZCa55Xrau4",
@@ -39,10 +34,6 @@ export async function getLinkForEditPayment(stripeCustomerId) {
                 default_allowed_updates: ['price'],
                 enabled: true,
                 products: [
-                    {
-                        product: configStripe.stripe.plans.free.productId,
-                        prices: [configStripe.stripe.plans.free.priceId], // IDs de preços permitidos
-                    },
                     {
                         product: configStripe.stripe.plans.basic.productId,
                         prices: [configStripe.stripe.plans.basic.priceId], // IDs de preços permitidos
@@ -85,6 +76,8 @@ export const getPlanByPriceId = (priceId) => {
 
 export const getStripeCustomerByEmail = async (email) =>{
     const customers = await stripe.customers.list({ email })
+    console.log(customers);
+    
     return customers.data[0]
 }
 
@@ -205,6 +198,10 @@ export const createCheckoutSession = async (userId, customerId) => {
         throw new Error("Erro ao criar sessão de pagamento");
     }
 }
+
+
+
+// Webhooks
 
 export const handleProcessWebHookUpdateSubscription = async (event) => {
     const stripeCustomerId = event.object.customer

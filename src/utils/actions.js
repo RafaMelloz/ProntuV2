@@ -13,7 +13,7 @@ export async function createSubscriptionAction() {
         return null
     }
 
-    const checkOutSession = await createBillingSession(session.user.id, session.user.email, clinic.stripeSubscriptionId)
+    const checkOutSession = await createBillingSession(session.user.email, clinic.stripeSubscriptionId)
     // console.log('session', session);
     
     if (!checkOutSession.url) return null

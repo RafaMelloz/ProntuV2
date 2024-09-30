@@ -5,11 +5,15 @@ import { InputFile } from "../inputFile"
 import { errorAlert, loadingAlert } from "@/utils/alerts";
 import { api } from "@/lib/axios";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { isValidEmail } from "@/utils/validations";
 
 export function ClinicRegistration() {
     const [inputFileData, setInputFileData] = useState("");
     const [register, setRegister] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const router = useRouter()
+
 
     
     const handleFileName = (event) => {
@@ -43,6 +47,10 @@ export function ClinicRegistration() {
             errorAlert("Preencha todos os campos obrigatórios");
             return;
         }
+        if (!isValidEmail(register.email)) {
+            errorAlert('Email inválido!');
+            return
+        }
         if (register.password !== register.passwordConfirm) {
             errorAlert("As senhas não coincidem");
             return;
@@ -73,8 +81,8 @@ export function ClinicRegistration() {
         
         // Garantir que isSubmitting será atualizado após a requisição
         promise.finally(() => {
-            setIsSubmitting(false)
-        });        
+                router.push('/login');
+         });        
     }
 
     return (
