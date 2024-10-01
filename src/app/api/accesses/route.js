@@ -15,10 +15,15 @@ cloudinary.config({
 
 export async function POST(req){
     const session = await getServerSession(authOptions);
-    console.log(session);
+    const statusClinic = await prisma.clinic.findUnique({ where: { idClinic: session.user.clinic.id },select: { stripeSubscriptionStatus: true } });
+    
 
     if (!session || session.user.role !== 'admin') {
         return NextResponse.json({ message: 'Você não possui permissão' }, { status: 401 });
+    }
+
+    if (statusClinic.stripeSubscriptionStatus === 'canceled' || statusClinic.stripeSubscriptionStatus === 'past_due') {
+        return NextResponse.json({ message: 'O plano da sua clinica foi cancelado ou esta inativo!' }, { status: 401 });	  
     }
 
     const {name,email,role} = await req.json();
@@ -127,9 +132,14 @@ export async function GET(req){
 
 export async function PUT(req) {
     const session = await getServerSession(authOptions);
+    const statusClinic = await prisma.clinic.findUnique({ where: { idClinic: session.user.clinic.id }, select: { stripeSubscriptionStatus: true } });
 
     if (!session || session.user.role !== 'admin') {
         return NextResponse.json({ message: 'Você não possui permissão' }, { status: 401 });
+    }
+
+    if (statusClinic.stripeSubscriptionStatus === 'canceled' || statusClinic.stripeSubscriptionStatus === 'past_due') {
+        return NextResponse.json({ message: 'O plano da sua clinica foi cancelado ou esta inativo!' }, { status: 401 });
     }
 
     const { name, email, role } = await req.json();
@@ -178,9 +188,14 @@ export async function PUT(req) {
 
 export async function DELETE(req) {
     const session = await getServerSession(authOptions);
+    const statusClinic = await prisma.clinic.findUnique({ where: { idClinic: session.user.clinic.id }, select: { stripeSubscriptionStatus: true } });
 
     if (!session || session.user.role !== 'admin') {
         return NextResponse.json({ message: 'Você não possui permissão' }, { status: 401 });
+    }
+
+    if (statusClinic.stripeSubscriptionStatus === 'canceled' || statusClinic.stripeSubscriptionStatus === 'past_due') {
+        return NextResponse.json({ message: 'O plano da sua clinica foi cancelado ou esta inativo!' }, { status: 401 });
     }
 
     const id = req.nextUrl.searchParams.get('id');

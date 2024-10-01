@@ -5,9 +5,14 @@ import prisma from "@/lib/prisma";
 
 export async function POST(req){
     const session = await getServerSession(authOptions);
+    const statusClinic = await prisma.clinic.findUnique({ where: { idClinic: session.user.clinic.id }, select: { stripeSubscriptionStatus: true } });
 
     if (!session) {
         return NextResponse.json({ message: 'Acesso negado' }, { status: 400 });
+    }
+
+    if (statusClinic.stripeSubscriptionStatus === 'canceled' || statusClinic.stripeSubscriptionStatus === 'past_due') {
+        return NextResponse.json({ message: 'O plano da sua clinica foi cancelado ou esta inativo!' }, { status: 401 });
     }
 
     const clinicId = req.nextUrl.searchParams.get('clinicId');
@@ -64,9 +69,14 @@ export async function POST(req){
 
 export async function DELETE(req){
     const session = await getServerSession(authOptions);
+    const statusClinic = await prisma.clinic.findUnique({ where: { idClinic: session.user.clinic.id }, select: { stripeSubscriptionStatus: true } });
 
     if (!session) {
         return NextResponse.json({ message: 'Acesso negado' }, { status: 400 });
+    }
+
+    if (statusClinic.stripeSubscriptionStatus === 'canceled' || statusClinic.stripeSubscriptionStatus === 'past_due') {
+        return NextResponse.json({ message: 'O plano da sua clinica foi cancelado ou esta inativo!' }, { status: 401 });
     }
 
     const consultId = req.nextUrl.searchParams.get('consultId');
@@ -114,12 +124,16 @@ const isTimeSlotAvailable = (hourConsult, selectedDoctor, existingConsult, curre
 };
 
 export async function PUT(req){
-
-    
     const session = await getServerSession(authOptions);
+    const statusClinic = await prisma.clinic.findUnique({ where: { idClinic: session.user.clinic.id }, select: { stripeSubscriptionStatus: true } });
+
 
     if (!session) {
         return NextResponse.json({ message: 'Acesso negado' }, { status: 400 });
+    }
+
+    if (statusClinic.stripeSubscriptionStatus === 'canceled' || statusClinic.stripeSubscriptionStatus === 'past_due') {
+        return NextResponse.json({ message: 'O plano da sua clinica foi cancelado ou esta inativo!' }, { status: 401 });
     }
 
     const { IdConsult, patientName, dateForListing, dateConsult, hourConsult, consultType, qntReturns, currentReturn, professionalId, phone, notes } = await req.json();

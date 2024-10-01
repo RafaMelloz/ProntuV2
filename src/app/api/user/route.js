@@ -14,11 +14,15 @@ cloudinary.config({
 
 
 export async function PUT(req) {
-
     const session = await getServerSession(authOptions);
+    const statusClinic = await prisma.clinic.findUnique({ where: { idClinic: session.user.clinic.id }, select: { stripeSubscriptionStatus: true } });
 
     if (!session) {
         return NextResponse.json({ message: 'Rota indisponível' }, { status: 401 });
+    }
+
+    if (statusClinic.stripeSubscriptionStatus === 'canceled' || statusClinic.stripeSubscriptionStatus === 'past_due') {
+        return NextResponse.json({ message: 'O plano da sua clinica foi cancelado ou esta inativo!' }, { status: 401 });
     }
 
     const formData = await req.formData();

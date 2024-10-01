@@ -63,9 +63,14 @@ async function transformAdjustmentAreas(adjustmentAreas) {
 
 export async function POST(req) {
     const session = await getServerSession(authOptions);
+    const statusClinic = await prisma.clinic.findUnique({ where: { idClinic: session.user.clinic.id }, select: { stripeSubscriptionStatus: true } });
 
     if (!session) {
         return NextResponse.json({ message: 'Acesso negado' }, { status: 400 });
+    }
+
+    if (statusClinic.stripeSubscriptionStatus === 'canceled' || statusClinic.stripeSubscriptionStatus === 'past_due') {
+        return NextResponse.json({ message: 'O plano da sua clinica foi cancelado ou esta inativo!' }, { status: 401 });
     }
 
     const formData = await req.formData();
@@ -224,9 +229,14 @@ export async function POST(req) {
 
 export async function PUT(req){
     const session = await getServerSession(authOptions);
+    const statusClinic = await prisma.clinic.findUnique({ where: { idClinic: session.user.clinic.id }, select: { stripeSubscriptionStatus: true } });
 
     if (!session) {
         return NextResponse.json({ message: 'Acesso negado' }, { status: 400 });
+    }
+
+    if (statusClinic.stripeSubscriptionStatus === 'canceled' || statusClinic.stripeSubscriptionStatus === 'past_due') {
+        return NextResponse.json({ message: 'O plano da sua clinica foi cancelado ou esta inativo!' }, { status: 401 });
     }
 
     const { editDescriptionService } = await req.json();
