@@ -342,7 +342,7 @@ export function MedicalContent({ symptoms, medicalRecord, gallery, exams, servic
                         </div>
                         <div className="font-semibold flex gap-2">
                             <span>Gastro-Intestinal:</span>
-                            <p className="first-letter:uppercase lowercase font-normal">{symptoms.gastroIntestinal.length.length > 0 ? symptoms.gastroIntestinal.join(", ") : '---'}</p>
+                            <p className="first-letter:uppercase lowercase font-normal">{symptoms.gastroIntestinal.length > 0 ? symptoms.gastroIntestinal.join(", ") : '---'}</p>
                         </div>
                         <div className="font-semibold flex gap-2">
                             <span>Gênito-Urinário:</span>

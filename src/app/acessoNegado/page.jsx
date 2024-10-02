@@ -21,7 +21,7 @@ export default async function AccessDeniedPage() {
 
             {
                 session && (
-                    <Link href="/inicio/calendario" className="mt-5 text-white bg-azul-900 rounded-full p-4 font-semibold text-3xl md:text-xl">
+                    <Link href="/inicio/calendario" className="mt-5 text-white bg-azul-900 rounded-full py-2 px-3 font-semibold text-2xl md:text-xl">
                             Voltar para a página inicial
                     </Link>
                 )

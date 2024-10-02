@@ -88,7 +88,7 @@ export function Reset(){
                     </Link>
 
                     <button type="submit" disabled={isSubmitting} onClick={(e) => formValidation(e)} className={`border-2 text-white rounded-lg py-2 px-4 ${isSubmitting ? "bg-azul-900/50 border-azul-900/20 cursor-not-allowed" : "border-azul-900 bg-azul-900"}`}>
-                        Enviar recuperação de senha
+                        Trocar senha
                     </button>
                 </div>
             </form>

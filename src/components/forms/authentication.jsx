@@ -7,6 +7,7 @@ import { errorAlert, loadingAlert } from "@/utils/alerts";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { api } from "@/lib/axios";
+import Link from "next/link";
 
 export function Authentication() {
     const [statusLogin, setStatusLogin] = useState(false);
@@ -142,6 +143,10 @@ export function Authentication() {
                                 Entrar
                             </button>
                         </div>
+
+
+                        <hr className="sm:mt-10 border-gray-500" />
+                        <p className="text-lg">Não tem uma conta? <Link className="text-azul-900" href={'/cadastro'}>Cadastre-se aqui</Link></p>
                     </form>
                 ) : (
                     <form className="w-full max-w-[440px] flex flex-col gap-5 px-5">

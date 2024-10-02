@@ -88,6 +88,7 @@ export function Account() {
         loadingAlert("Atualizando...", promise);
         
         let newImage = (await promise).data.image;
+        setLoadingForm(false)
 
         promise.finally(() => {
             setLoadingForm(false)

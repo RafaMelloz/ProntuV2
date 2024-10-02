@@ -36,7 +36,7 @@ export const PasswordEmail = (name, token, dateLocal) => {
                 <p className="bg-primary/10 text-primary font-semibold p-2  w-32 block m-auto tracking-widest text-xl text-center">
                     {token}
                 </p>
-                <img className="block mx-auto my-3 w-full mt-10" src="https://prontue.com/assets/footerEmail-BL6YmNQn.png" alt=""/>
+                <img className="block mx-auto my-3 w-full mt-10" src="https://prontue.vercel.app/assets/footerEmail-BL6YmNQn.png" alt=""/>
             </div>
         </Tailwind>
     );

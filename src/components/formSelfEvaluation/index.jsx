@@ -116,6 +116,15 @@ export function FormSelfEvaluation({clinicID}) {
         setTerms(e.target.checked);
     }
 
+    const clearFormData = () => {
+        setFormData({
+            personalDetails: {},
+            uncomfortableAreas: {},
+            symptoms: {},
+            moreSymptoms: {}
+        });
+    }
+
 
     const submitForm = async () => {
         if (!terms) {
@@ -123,6 +132,8 @@ export function FormSelfEvaluation({clinicID}) {
             return;
         } else{
             const { personalDetails, uncomfortableAreas, symptoms, moreSymptoms } = formData;
+            console.log( personalDetails, uncomfortableAreas, symptoms, moreSymptoms);
+            
             setLoadingForm(true);
 
             const promise = api.post("/api/selfEvaluation", {

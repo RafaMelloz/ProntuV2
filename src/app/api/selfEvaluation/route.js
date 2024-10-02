@@ -21,6 +21,8 @@ function getFieldValues(field) {
 export async function POST(req) {
 
     const formData = await req.formData();
+    console.log(formData);
+    
     const idClinic = formData.get('idClinic');
 
     const name = formData.get('name');
@@ -37,7 +39,7 @@ export async function POST(req) {
     const description = formData.get('description');
     const cause = formData.get('cause');
 
-    const discomforts = getFieldValues(formData.get('discomforts[]'));
+    const discomforts = getFieldValues(formData.getAll('discomforts[]'));
 
     const frequency = formData.get('frequency');
 

@@ -65,6 +65,7 @@ export default function NewPatient({params}) {
         loadingAlert("Cadastrando...", promise);
 
         promise.finally(() => {
+            window.location.reload()
             setLoading(false)
             clearForm()
         });

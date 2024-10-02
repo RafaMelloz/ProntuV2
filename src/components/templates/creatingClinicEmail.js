@@ -57,7 +57,7 @@ export function creatingClinicEmail(name,codeClinic) {
         </head>
         <body>
             <div>
-                <img class="logoProntu" src="https://prontue.com/assets/banner-C3vPZyId.jpg" alt="Logo ProntuEPonto">
+                <img class="logoProntu" src="https://prontue.vercel.app/assets/banner-C3vPZyId.jpg" alt="Logo ProntuEPonto">
                 <div>
                     <h2 class="textXL" style="padding: 30px 20px;">Olá ${name}</h2>
                     <p class="textLg" style="text-align: center;">Seja bem-vindo(a) ao Prontu e Ponto</p>
@@ -77,7 +77,7 @@ export function creatingClinicEmail(name,codeClinic) {
                     <p class="textLg" style="text-align: center;">contato@prontue.com</p>
                 </div>
             </div>
-            <img style="margin: 0 auto; display: block;" src="	https://prontue.com/assets/footerEmail-BL6YmNQn.png" alt="">
+            <img style="margin: 0 auto; display: block;" src="	https://prontue.vercel.app/assets/footerEmail-BL6YmNQn.png" alt="">
         </body>
         </html>
     `;

@@ -7,6 +7,11 @@ export const configStripe = {
         secretKey: process.env.STRIPE_SECRET_KEY,
         webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
         plans:{
+            free: {
+                name: "Plano gratuito",
+                priceId: "price_1Q31xB2NQAhIsjZC3gDXWNU1",
+                productId: "prod_QurghWkKDOJTJk"
+            },
             basic:{
                 name: "Plano básico",
                 priceId: "price_1Q31xX2NQAhIsjZCa55Xrau4",
