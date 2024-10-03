@@ -242,7 +242,7 @@ export const handleProcessWebHookUpdateSubscription = async (event) => {
             alreadyAClient: true,
             stripeCustomerId,
             stripeSubscriptionId,
-            stripeSubscriptionStatus,
+            stripeSubscriptionStatus: stripeSubscriptionStatus === "incomplete" ? "active" : stripeSubscriptionStatus,
             stripePriceId
         }
     })
