@@ -84,7 +84,10 @@ export function ClinicRegistration() {
             if (response.status === 200) {
                 router.push('/login');
             }
-         });        
+         }).finally(() => {	
+            setIsSubmitting(false);
+            
+        });
     }
 
     return (
