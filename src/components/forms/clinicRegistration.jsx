@@ -80,8 +80,10 @@ export function ClinicRegistration() {
         loadingAlert("Cadastrando...", promise);
         
         // Garantir que isSubmitting será atualizado após a requisição
-        promise.finally(() => {
+        promise.then((response) => {
+            if (response.status === 200) {
                 router.push('/login');
+            }
          });        
     }
 
