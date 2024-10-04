@@ -91,7 +91,7 @@ export function ClinicRegistration() {
             <section className="h-[90%] flex flex-col gap-3 justify-center">
                 <div>
                     <h2 className="text-4xl font-semibold text-center sm:text-left">Crie uma conta</h2>
-                    <p className="text-center sm:text-left">Por favor, preencha os campos abaixo com as informações necessárias.</p>
+                    <p className="text-center sm:text-left">Por favor, preencha os campos abaixo com as informações necessárias. Ao cadastrar sua clinica, verifique seu email para ter seu código</p>
                 </div>
 
                 <InputText InputId={"responsibleName"} labelName={'Nome completo:'} required={true} onChange={changeRegister} val={register.responsibleName || ""} />

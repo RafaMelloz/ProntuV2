@@ -114,7 +114,7 @@ export async function POST(req) {
             });
         }
 
-        return NextResponse.json({ message: 'Cadastrado com sucesso!' });
+        return NextResponse.json({ message: 'Cadastrado com sucesso! Acessos enviados por email' });
     } catch (error) {
         console.log(error);
         return NextResponse.json({ message: 'Erro ao cadastrar a clínica' }, { status: 500 });
