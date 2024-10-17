@@ -41,20 +41,24 @@ export async function POST(req){
             }
         }) === 0;
 
-        const isCpfAvailable = await prisma.patient.count({
-            where: {
-                cpf,
-                idClinic: parseInt(clinicId),
+        if(cpf){
+            const isCpfAvailable = await prisma.patient.count({
+                where: {
+                    cpf,
+                    idClinic: parseInt(clinicId),
+                }
+            }) === 0;
+
+            if (!isCpfAvailable) {
+                return NextResponse.json({ message: 'CPF já nesta clinica cadastrado' }, { status: 400 });
             }
-        }) === 0;
+        }
 
         if (!isPhoneAvailable) {
             return NextResponse.json({ message: 'Telefone já nesta clinica cadastrado' }, { status: 400 });
         }
 
-        if (!isCpfAvailable) {
-            return NextResponse.json({ message: 'CPF já nesta clinica cadastrado' }, { status: 400 });
-        }
+        
 
 
         await prisma.patient.create({

@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { PersonalDetails } from "@/components/formSelfEvaluation/steps/personalDetails";
 import { errorAlert, loadingAlert } from "@/utils/alerts";
-import { isValidCPF, isValidDate } from "@/utils/validations";
+import { isValidCPF, isValidDate, isValidEmail } from "@/utils/validations";
 import { api } from "@/lib/axios";
 
 
@@ -27,13 +27,18 @@ export default function NewPatient({params}) {
         if (!personalDetails.name ||
             !personalDetails.birth_date ||
             !personalDetails.phone ||
-            !personalDetails.cpf ||
             !personalDetails.profession ||
             !personalDetails.how_know_us) {
             errorAlert(`Preencha todos os campos obrigatórios!`);
-        } else if (!isValidCPF(personalDetails.cpf)) {
+        } else if (personalDetails.cpf && !isValidCPF(personalDetails.cpf)) {
             errorAlert('CPF inválido!');
-        } else if (!isValidDate(personalDetails.birth_date)) {
+        }
+        else if (personalDetails.email && !isValidEmail(personalDetails.email)) {
+            errorAlert('Email inválido!');
+
+        }
+
+        else if (!isValidDate(personalDetails.birth_date)) {
             errorAlert('Data de nascimento inválida!');
         } else if (personalDetails.phone.length < 14) {
             errorAlert('Telefone inválido!');
@@ -64,10 +69,13 @@ export default function NewPatient({params}) {
 
         loadingAlert("Cadastrando...", promise);
 
-        promise.finally(() => {
-            window.location.reload()
+        promise.then((response) => {
+            if (response.status === 200) {
+                window.location.reload()
+                clearForm()
+            }
+        }).finally(() => {
             setLoading(false)
-            clearForm()
         });
     };
 

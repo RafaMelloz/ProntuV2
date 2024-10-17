@@ -128,10 +128,14 @@ export default async function PatientsRecordPage({params}) {
                         <span className="font-semibold mr-2">Profissão:</span>
                         {personalDetails.profession}
                     </p>
-                    <p>
-                        <span className="font-semibold mr-2">CPF:</span>
-                        {personalDetails.cpf}
-                    </p>
+                    {
+                        personalDetails.cpf && (
+                            <p>
+                                <span className="font-semibold mr-2">CPF:</span>
+                                {personalDetails.cpf}
+                            </p>
+                        )
+                    }
                     <p>
                         <span className="font-semibold mr-2">Tel. Contato:</span>
                         {personalDetails.phone}

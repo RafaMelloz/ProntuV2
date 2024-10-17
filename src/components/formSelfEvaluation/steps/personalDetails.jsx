@@ -72,7 +72,6 @@ export function PersonalDetails({ data, onDataChange }){
                     classLabel={'md:w-1/3'}
                     mask="cpf"
                     max={14}
-                    required
                 />
             </div>
 

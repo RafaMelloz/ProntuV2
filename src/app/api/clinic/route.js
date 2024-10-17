@@ -31,13 +31,20 @@ export async function POST(req) {
 
     try {
         // Verificações
-        const isEmailAvailable = await prisma.user.count({ where: { email } }) === 0;
         const isPhoneAvailable = await prisma.user.count({ where: { phone } }) === 0;
-        const isCnpjAvailable = await prisma.clinic.count({ where: { cpfCnpj } }) === 0;
 
-        if (!isEmailAvailable) return NextResponse.json({ message: 'Email já cadastrado na plataforma' }, { status: 400 });
+        if (cpfCnpj) {
+            const isCnpjAvailable = await prisma.clinic.count({ where: { cpfCnpj } }) === 0;
+            if (!isCnpjAvailable) return NextResponse.json({ message: 'CPF ou CNPJ já cadastrado na plataforma' }, { status: 400 });
+        }
+
+        if (email) {
+            const isEmailAvailable = await prisma.user.count({ where: { email } }) === 0;
+            if (!isEmailAvailable) return NextResponse.json({ message: 'Email já cadastrado na plataforma' }, { status: 400 });
+        }
+
+       
         if (!isPhoneAvailable) return NextResponse.json({ message: 'Telefone já cadastrado na plataforma' }, { status: 400 });
-        if (!isCnpjAvailable) return NextResponse.json({ message: 'CPF ou CNPJ já cadastrado na plataforma' }, { status: 400 });
         if (nameClinic.length < 3) return NextResponse.json({ message: 'O nome da clínica deve ter pelo menos 3 caracteres' }, { status: 400 });
 
 

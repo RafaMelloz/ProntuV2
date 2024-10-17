@@ -14,7 +14,7 @@ model Clinic {
   logoClinic      String?
   address         String
   responsibleName String
-  cpfCnpj         String  @unique
+  cpfCnpj         String? @unique
 
   stripeCustomerId         String?
   stripeSubscriptionId     String?
