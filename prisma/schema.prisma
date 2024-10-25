@@ -52,7 +52,7 @@ model Patient {
   name           String
   birth_date     String
   phone          String
-  cpf            String
+  cpf            String // Tornar opcional mais tarde
   profession     String
   email          String?
   address        String

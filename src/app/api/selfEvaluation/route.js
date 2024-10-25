@@ -105,7 +105,7 @@ export async function POST(req) {
                 name,
                 birth_date,
                 phone,
-                cpf,
+                cpf: cpf ? cpf : "null",
                 profession,
                 email,
                 address,

@@ -51,7 +51,7 @@ export function PatientsTable({patients, role, searchValue, openModalHandler}) {
                                     {patient.name}
                                 </span>
                             </td>
-                            <td className="text-center h-10">{patient.cpf ? patient.cpf : '----------'}</td>
+                            <td className="text-center h-10">{patient.cpf && patient.cpf !== "null" ? patient.cpf : '----------'}</td>
                             <td className="text-center h-10">{patient.phone}</td>
                             <td className="text-center h-10">{patient.birth_date}</td>
                             

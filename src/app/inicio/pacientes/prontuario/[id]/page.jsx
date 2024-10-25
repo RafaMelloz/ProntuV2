@@ -129,7 +129,7 @@ export default async function PatientsRecordPage({params}) {
                         {personalDetails.profession}
                     </p>
                     {
-                        personalDetails.cpf && (
+                        personalDetails.cpf && personalDetails.cpf !== "null" && (
                             <p>
                                 <span className="font-semibold mr-2">CPF:</span>
                                 {personalDetails.cpf}
