@@ -9,6 +9,16 @@ import { redirect } from "next/navigation";
 export default async function PatientsRecordPage({params}) {
 
     const session = await getServerSession(authOptions);
+    const patient = await prisma.patient.findUnique({
+        where: {
+            idPatient: parseInt(params.id),
+            idClinic: session.user.clinic.id
+        }
+    });
+
+    if (!patient) {
+        redirect('/inicio/pacientes')
+    }
 
     if (session.user.role === 'secretaria') {
         redirect('/acessoNegado')
@@ -102,7 +112,6 @@ export default async function PatientsRecordPage({params}) {
         const age = Math.floor((new Date() - date) / (365.25 * 24 * 60 * 60 * 1000));
         return age;
     };
-    console.log(symptoms);
     
     return (
         <>

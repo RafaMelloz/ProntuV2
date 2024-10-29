@@ -224,14 +224,25 @@ export function MedicalContent({ symptoms, medicalRecord, gallery, exams, servic
 
 
     const validateForm = (event) => {
-        event.preventDefault()
+        event.preventDefault();
         console.log(newService);
-        if (!newService.nameService || !newService.dateService || Object.keys(newService.adjustmentAreas).length === 0) {
-            return errorAlert('Preencha todos os campos de atendimento!');
-        } else if (!isValidDate(newService.dateService)) {
-            return errorAlert('Data de invalida!');
+
+        const { nameService, dateService, adjustmentAreas, descriptionService } = newService;
+
+        // Check if any of the fields are filled
+        const isAnyFieldFilled = nameService || Object.keys(adjustmentAreas).length > 0 || descriptionService;
+
+        // If any field is filled, ensure all fields are filled
+        if (isAnyFieldFilled) {
+            if (!nameService || !dateService || Object.keys(adjustmentAreas).length === 0 || !descriptionService) {
+                return errorAlert('Preencha todos os campos de atendimento!');
+            } else if (!isValidDate(dateService)) {
+                return errorAlert('Data de invalida!');
+            } else {
+                submitForm();
+            }
         } else {
-            submitForm()
+            submitForm();
         }
     }
 

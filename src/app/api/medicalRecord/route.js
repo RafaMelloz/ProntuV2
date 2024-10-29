@@ -210,17 +210,20 @@ export async function POST(req) {
             });
         }
 
-        const services = await prisma.services.create({
-            data: {
-                nameService,
-                dateService,
-                adjustmentAreas,
-                descriptionService,
-                medicalRecordId: medicalRecord.idMedicalRecord
-            }
-        });
 
-        return NextResponse.json({ message: 'Atendimento salvo com sucesso!' });
+        if (nameService && dateService && adjustmentAreas && descriptionService) { 
+            const services = await prisma.services.create({
+                data: {
+                    nameService,
+                    dateService,
+                    adjustmentAreas,
+                    descriptionService,
+                    medicalRecordId: medicalRecord.idMedicalRecord
+                }
+            });
+        }
+
+        return NextResponse.json({ message: 'Prontuario salvo com sucesso!' });
     } catch (error) {
         console.error(error);
         return NextResponse.json({ message: 'Erro ao salvar atendimento' }, { status: 500 });
