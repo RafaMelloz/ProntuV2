@@ -16,9 +16,9 @@ export async function POST(req){
     }
 
     const clinicId = req.nextUrl.searchParams.get('clinicId');
-    const { name, birth_date, phone, cpf, profession, email, address, how_know_us, } = await req.json();
+    const { name, birth_date, phone, cpf, profession, email, address, how_know_us, } = await req.json();    
 
-    if(clinicId !== session.user.clinic.id){
+    if (parseInt(clinicId) !== parseInt(session.user.clinic.id)){
         return NextResponse.json({ message: 'Não é possível cadastrar em outra clinica' }, { status: 400 });
     }
 
